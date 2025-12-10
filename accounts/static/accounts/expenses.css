@@ -1,25 +1,22 @@
 .form-grid{
     display: grid;
-    grid-template-columns: repeat(8, 120px);
-    gap: 5px;
-    align-items: center;
-    margin-top: 20px;
+    grid-template-columns: repeat(9, 1fr);
+    gap: 10px;
+    align-items: start;
 }
 
-.form-grid label {
-    align-items: center;
+.field label{
+    display: block;
     font-weight: bold;
+    margin-bottom: 4px;
 }
 
-.form-grid input, .form-grid select {
-    width: 100px;
+.field input, button, select{
+    width: 100%;
+    padding: 6px;
+    box-sizing: border-box;
 }
 
 .expense-grid{
     display: grid;
-    grid-template-columns: repeat(7, 120px)
-    gap: 5px;
-    align-items: center;
-    margin-top: 20px;
 }
-

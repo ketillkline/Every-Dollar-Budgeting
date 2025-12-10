@@ -195,9 +195,15 @@ class ExpenseView(View):
         return render(request, self.template_name, {"expenses": self.expenses})
 
     def clear_single(self, request: HttpRequest):
-        pass
+        expense_id = request.POST.get("expense_id")
+        if not expense_id:
+            self.errors.append("Invalid ID. Please try again")
+        Expense.objects.filter(id=expense_id).delete()
+        expenses = Expense.objects.all().order_by("-date")
+        return render(request, self.template_name, {"expenses": expenses})
+
     def edit(self, request: HttpRequest):
-        pass
+        edit_error = []
     def cancel(self, request: HttpRequest):
         pass
 
@@ -213,10 +219,10 @@ class ExpenseView(View):
         if not value:
             missing.append("value")
         method = request.POST.get("method")
-        if not value:
+        if not method:
             missing.append("method")
         frequency = request.POST.get("frequency")
-        if not value:
+        if not frequency:
             missing.append("frequency")
         category = request.POST.get("category")
         description = request.POST.get("description")
@@ -234,18 +240,19 @@ class ExpenseView(View):
         if missing:
             self.errors.append("Please fill in all required fields")
 
-        if self.errors:
-            return render(request, self.template_name, {"errors": self.errors, "expenses": self.expenses})
-
-        # --------- GENERATING OBJECT ----------------------------------------------------------------------- #
-
         fields = {"name": name, "date": date, "value": value, "method": method, "frequency": frequency,
                   "category": category, "description": description}
 
-        new_expense = Expense.objects.create(**fields)
+        if self.errors:
+            return render(request, self.template_name, {"errors": self.errors, "expenses": self.expenses,
+                                                        "fields": fields})
 
+        # --------- GENERATING OBJECT ----------------------------------------------------------------------- #
+
+        new_expense = Expense.objects.create(**fields)
+        print(f"added {name} ")
         expenses = Expense.objects.all().order_by("-date")
-        return render(request, self.template_name, {"expenses": expenses}) #
+        return render(request, self.template_name, {"expenses": expenses})
 
 
     def add_edited(self, request: HttpRequest):

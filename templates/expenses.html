@@ -3,157 +3,133 @@ This is where the user will add their expenses. Expenses have a name, value, met
 -->
 
 <!DOCTYPE html>
-<html>
 
+<html>
 <head>
     <meta charset="UTF-8">
-    <title>Add Expenses</title>
+    <title>Expenses</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'accounts/expenses.css' %}">
-
-
 </head>
 
 <body>
-<h1>Let's add some expenses</h1>
-<p>Required fields contain *</p>
-{% if errors %}
-    {% for error in errors %}
-        <p style="color:red;">{{ error }}</p>
-    {% endfor %}
-{% endif %}
-
-<form method="POST">
-    {% csrf_token %}
-    <div class="form-grid">
-        <label for="name">Name*</label>
-        <label for="date">Date</label>
-        <label for="value">Value*</label>
-        <label for="method">Method*</label>
-        <label for="frequency">Frequency*</label>
-        <label for="category">Category</label>
-        <label for="description">Description</label><br>
-
-
-        <input type="text" name="name" id="name" value="{{ name }}">
-        <input type="date" name="date" id="date" value="{{ date }}">
-        <input type="text" name="value" id="value" value="{{ value }}">
-        <select name="method" id="method" value="{{ method }}">
-            <option value="">-- select --</option>
-            <option value="Cash">Cash</option>
-            <option value="Credit">Credit</option>
-            <option value="Debit">Debit</option>
-        </select>
-        <select name="frequency" id="frequency" value="{{ frequency }}">
-            <option value="">-- select --</option>
-            <option value="One-Time">One-Time</option>
-            <option value="Daily">Daily</option>
-            <option value="Weekly">Weekly</option>
-            <option value="Bi-Weekly">Bi-Weekly</option>
-            <option value="Monthly">Monthly</option>
-        </select>
-        <input type="text" name="category" id="category" value="{{ category }}">
-        <input type="text" name="description" id="description" value="{{ description }}">
-        <button type="submit" name="action" value="add">Submit</button>
-        <button type="submit" name="action" value="clear_all">Clear All Expenses</button>
-    </div>
-</form>
-
-<h2>Your Expenses</h2>
-<div class="expense-grid">
-    <table border="1">
-        <tr>
-            <th>Name</th>
-            <th>Date</th>
-            <th>Value</th>
-            <th>Method</th>
-            <th>Frequency</th>
-            <th>Category</th>
-            <th>Description</th>
-            <th>Buttons</th>
-        </tr>
-        {% for expense in expenses %}
-            <tr>
-                <td>{{ expense.name }}</td>
-                <td>
-                    {% if expense.date %}
-                        {{ expense.date }}
-                    {% else %}
-                        --
-                    {% endif %}
-                </td>
-                <td>{{ expense.value }}</td>
-                <td>{{ expense.method }}</td>
-                <td>{{ expense.frequency }}</td>
-                <td>{{ expense.category }}</td>
-                <td>{{ expense.description }}</td>
-                <td>
-                    <form method="POST">
-                        {% csrf_token %}
-                        <button type="submit" name="action" value="clear_single">Clear</button>
-                        <button type="submit" name="action" value="edit">Edit</button>
-                        <input type="hidden" name="expense_id" value="{{ expense.id }}">
-
-                    </form>
-
-                </td>
-            </tr>
+    <h1>Let's add some expenses</h1>
+    <p>Required fields contain *</p>
+    {% if errors %}
+        {% for error in errors %}
+            <p style="color:red;">{{ error }}</p>
         {% endfor %}
-    </table>
-
-</div>
-<p><a href="/">Go back home</a></p>
-
-{% if editing %}
-    {% if edit_error %}
-        <p style="color:red;">{{ edit_error }}</p>
     {% endif %}
-    <div class="modal-background">
-        <div class="modal-box">
 
-            <form method="POST">
-                {% csrf_token %}
-                <div class="form-grid">
-            <label for="edited_name">Name*</label>
-            <label for="edited_date">Date</label>
-            <label for="edited_value">Value*</label>
-            <label for="method">Method*</label>
-            <label for="frequency">Frequency*</label>
-            <label for="category">Category</label>
-            <label for="description">Description</label><br>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-grid">
+            <div class="field">
+                <label for="name">Name*</label>
+                <input type="text" name="name" id="name" value ="{{ fields.name }}">
+            </div>
 
+            <div class="field">
+                <label for="date">Date</label>
+                <input type="date" name="date" id="date" value ="{{ fields.date }}">
+            </div>
 
-            <input type="text" name="edited_name" id="edited_name" value="{{ target_expense.name }}">
-            <input type="date" name="edited_date" id="edited_date" value="{{ target_expense.date }}">
-            <input type="text" name="edited_value" id="edited_value" value="{{ target_expense.value }}">
-            <select name="edited_method" id="edited_method" value="{{ target_expense.method }}">
-                <option value="">-- select --</option>
-                <option value="Cash">Cash</option>
-                <option value="Credit">Credit</option>
-                <option value="Debit">Debit</option>
-            </select>
-            <select name="edited_frequency" id="edited_frequency" value="{{ target_expense.frequency }}">
-                <option value="">-- select --</option>
-                <option value="One-Time">One-Time</option>
-                <option value="Daily">Daily</option>
-                <option value="Weekly">Weekly</option>
-                <option value="Bi-Weekly">Bi-Weekly</option>
-                <option value="Monthly">Monthly</option>
-            </select>
-            <input type="text" name="edited_category" id="edited_category" value="{{ target_expense.category }}">
-            <input type="text" name="edited_description" id="edited_description" value="{{ target_expense.description }}">
-            <button type="submit" name="action" value="add_edited">Submit</button>
-            <button type="submit" name="action" value="cancel">Cancel</button>
-            <input type="hidden" name="expense_id" value="{{ target_expense.id }}">
-                 </div>
+            <div class="field">
+                <label for="value">Amount*</label>
+                <input type="text" name="value" id="value" value ="{{ fields.value }}">
+            </div>
 
-            </form>
+            <div class="field">
+                <label for="method">Method*</label>
+                <select name="method" id="method">
+                    <option value="">-- select --</option>
+                    <option value="Cash" {% if fields.method == "cash" %} selected {% endif %}>Cash</option>
+                    <option value="Credit" {% if fields.method == "credit" %} selected {% endif %}>Credit</option>
+                    <option value="Debit" {% if fields.method == "debit" %} selected {% endif %}>Debit</option>
+                </select>
+            </div>
 
+            <div class="field">
+                <label for="frequency">Frequency*</label>
+                <select name="frequency" id="frequency">
+                    <option value="">-- select --</option>
+                    <option value="One-Time" {% if fields.frequency == "one_time" %} selected {% endif %}>One-Time</option>
+                    <option value="Monthly" {% if fields.frequency == "monthly" %} selected {% endif %}>Monthly</option>
+                    <option value="Bi-weekly" {% if fields.frequency == "bi_weekly" %} selected {% endif %}>Bi-Weekly</option>
+                    <option value="Weekly" {% if fields.frequency == "weekly" %} selected {% endif %}>Weekly</option>
+                    <option value="Daily" {% if fields.frequency == "daily" %} selected {% endif %}>Daily</option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label for="category">Category</label>
+                <input type="text" name="category" id="category" value = "{{ fields.category }}">
+            </div>
+
+            <div class="field">
+                <label for="description">Description</label>
+                <input type="text" name="description" id="description" value = "{{ fields.description }}">
+            </div>
+
+            <div class="field">
+                <label>&nbsp;</label>
+                <button type="submit" name="action" value="add">Submit</button>
+            </div>
+
+            <div class="field">
+                <label>&nbsp;</label>
+                <button type="submit" name="action" value="clear_all">Clear All Expenses</button>
+            </div>
         </div>
-
+    </form>
+     <p><a href="/">Home</a></p>
+    <div class="expense-grid">
+        <table border="1">
+            <tr>
+                <th>Name</th>
+                <th>Date</th>
+                <th>Value</th>
+                <th>Method</th>
+                <th>Frequency</th>
+                <th>Category</th>
+                <th>Description</th>
+                <th>Buttons</th>
+            </tr>
+            {% for expense in expenses %}
+                <tr>
+                    <td>{{ expense.name }}</td>
+                    <td>
+                        {% if expense.date %}
+                            {{ expense.date }}
+                        {% else %}
+                            --
+                        {% endif %}
+                    </td>
+                    <td>{{ expense.value }}</td>
+                    <td>{{ expense.method }}</td>
+                    <td>{{ expense.frequency }}</td>
+                    <td>{{ expense.category }}</td>
+                    <td>{{ expense.description }}</td>
+                    <td>
+                        <form method="POST">
+                            {% csrf_token %}
+                            <button type="submit" name="action" value="clear_single">Clear</button>
+                            <button type="submit" name="action" value="edit">Edit</button>
+                            <input type="hidden" name="expense_id" value="{{ expense.id }}">
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
     </div>
-{% endif %}
 
+    {% if editing %}
+        {% if edit_error %}
+            {% for error in edit_error %}
+                <p style="color:red;">{{ error }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endif %}
 
 </body>
 
