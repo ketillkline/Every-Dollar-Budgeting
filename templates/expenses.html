@@ -133,6 +133,7 @@ This is where the user will add their expenses. Expenses have a name, value, met
 -->
 
     {% if editing %}
+    <h2>Edit "{{ old_fields.name }}" {% if old_fields.date %} from {{ old_fields.date }} {% endif %}</h2>
         {% if edit_errors %}
             {% for error in edit_errors %}
                 <p style="color:red;">{{ error }}</p>
@@ -141,7 +142,6 @@ This is where the user will add their expenses. Expenses have a name, value, met
 
         <form method="POST">
             {% csrf_token %}
-              <h2>Edit "{{ old_fields.name }}" {% if old_fields.date %} from {{ old_fields.date }} {% endif %}</h2>
             <div class="edit-grid">
                 <input type="hidden" name="expense_id" value="{{ old_fields.id }}">
                 <div class="field">
@@ -157,6 +157,38 @@ This is where the user will add their expenses. Expenses have a name, value, met
                 <div class="field">
                     <label for="edited_value">Amount*</label>
                     <input type="text" name="edited_value" id="edited_value" value="{{ old_fields.value }}">
+                </div>
+
+                <div class="field">
+                    <label for="edited_method">Method*</label>
+                    <select name="edited_method" id="edited_method">
+                        <option value="">-- select --</option>
+                        <option value="Cash" {% if old_fields.method == "Cash" %} selected {% endif %}>Cash</option>
+                        <option value="Credit" {% if old_fields.method == "Credit" %} selected {% endif %}>Credit</option>
+                        <option value="Debit" {% if old_fields.method == "Debit" %} selected {% endif %}>Debit</option>
+                    </select>
+                </div>
+
+                 <div class="field">
+                    <label for="edited_frequency">Frequency*</label>
+                    <select name="edited_frequency" id="edited_frequency">
+                        <option value="">-- select --</option>
+                        <option value="One-Time" {% if old_fields.frequency == "One-Time" %} selected {% endif %}>One-Time</option>
+                        <option value="Monthly" {% if old_fields.frequency == "Monthly" %} selected {% endif %}>Monthly</option>
+                        <option value="Bi-Weekly" {% if old_fields.frequency == "Bi-Weekly" %} selected {% endif %}>Bi-Weekly</option>
+                        <option value="Weekly" {% if old_fields.frequency == "Weekly" %} selected {% endif %}>Weekly</option>
+                        <option value="Daily" {% if old_fields.frequency == "Daily" %} selected {% endif %}>Daily</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="edited_category">Category</label>
+                    <input type="text" name="edited_category" id="edited_category" value="{{ old_fields.category }}">
+                </div>
+
+                <div class="field">
+                    <label for="edited_description">Description</label>
+                    <input type="text" name="edited_description" id="edited_description" value="{{ old_fields.description }}">
                 </div>
 
 
