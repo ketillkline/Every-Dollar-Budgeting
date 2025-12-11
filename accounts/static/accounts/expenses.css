@@ -19,4 +19,5 @@
 
 .expense-grid{
     display: grid;
+    justify-items: space-between;
 }
