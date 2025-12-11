@@ -211,7 +211,7 @@ class ExpenseView(View):
         expense = Expense.objects.get(id=expense_id)
         old_fields = {"name": expense.name, "date": expense.date, "id": expense.id}
 
-        return render(request, self.template_name, {"old_fields": old_fields ,"editing": True, "target_expense": expense, "expenses": self.expenses})
+        return render(request, self.template_name, {"old_fields": old_fields ,"editing": True, "expenses": self.expenses})
 
 
     def cancel(self, request, *args, **kwargs):
@@ -267,6 +267,8 @@ class ExpenseView(View):
 
     def add_edited(self, request, *args, **kwargs):
         edit_errors = []
+        expense_id = request.POST.get("expense_id")
+        expense = Expense.objects.get(id=expense_id)
 
         old_fields = {"name": expense.name, "date": expense.date, "id": expense.id}
 
@@ -280,6 +282,8 @@ class ExpenseView(View):
         expense.save()
 
         expenses = Expense.objects.all().order_by("-date")
+
+        return render(request, self.template_name, {"expenses": expenses, "editing": False})
 
 
 
