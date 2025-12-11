@@ -219,7 +219,7 @@ class ExpenseView(View):
 
 
     def cancel(self, request, *args, **kwargs):
-        pass
+        return render(request, self.template_name, {"editing": False, "expenses": self.expenses})
 
     def add(self, request, *args, **kwargs):
         missing = []

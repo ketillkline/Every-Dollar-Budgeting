@@ -35,7 +35,8 @@
 
 .buttons-group{
     display: flex;
-    gap: 1rem;
+    gap: 2rem;
+    padding: 5px;
 }
 
 .expense-grid{

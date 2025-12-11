@@ -191,16 +191,12 @@ This is where the user will add their expenses. Expenses have a name, value, met
                     <input type="text" name="edited_description" id="edited_description" value="{{ old_fields.description }}">
                 </div>
 
-
-
-
                 <div class="buttons-group">
-                    <button type="submit" name="action" value="add_edited">Submit</button>
+                    <div class="field">
+                        <button type="submit" name="action" value="add_edited">Submit</button>
+                        <button type="submit" name="action" value="cancel">Cancel</button>
+                    </div>
                 </div>
-
-
-
-
             </div>
         </form>
     {% endif %}
