@@ -70,16 +70,19 @@ This is where the user will add their expenses. Expenses have a name, value, met
                 <label for="description">Description</label>
                 <input type="text" name="description" id="description" value = "{{ fields.description }}">
             </div>
+            <div class="buttons-group">
+                <div class="field">
+                    <label>&nbsp;</label>
+                    <button type="submit" name="action" value="add">Submit</button>
+                </div>
 
-            <div class="field">
-                <label>&nbsp;</label>
-                <button type="submit" name="action" value="add">Submit</button>
+                <div class="field">
+                    <label>&nbsp;</label>
+                    <button type="submit" name="action" value="clear_all">Clear All</button>
+                </div>
+
             </div>
 
-            <div class="field">
-                <label>&nbsp;</label>
-                <button type="submit" name="action" value="clear_all">Clear All Expenses</button>
-            </div>
         </div>
     </form>
      <p><a href="/">Home</a></p>

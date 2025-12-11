@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpRequest
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.core.validators import EmailValidator
 from django.core.exceptions import ValidationError
@@ -162,10 +163,13 @@ def logout_view(request: HttpRequest):
 
 
 class ExpenseView(View):
-    def __init__(self):
+    def dispatch(self, request, *args, **kwargs):
+        self.request = request
+        self.user = request.user
         self.template_name = "expenses.html"
         self.errors = []
         self.expenses = Expense.objects.all().order_by("-date")
+        return super().dispatch(request, *args, **kwargs)
 
     def get(self, request: HttpRequest):
         # expenses = Expense.objects.all().order_by("-date")
@@ -258,11 +262,20 @@ class ExpenseView(View):
     def add_edited(self, request: HttpRequest):
         pass
 
-class HomeView(View):
-    def __init__(self):
-        pass
+
+class HomeView(LoginRequiredMixin, View):
+    login_url = '/login/'
+    redirect_field_name = 'redirect_to'
+
+    def dispatch(self, request, *args, **kwargs):
+        self.request = request
+        self.user = request.user
+        self.template_name = "home.html"
+        return super().dispatch(request, *args, **kwargs)
+
     def get(self, request: HttpRequest):
-        pass
+        return render(request, self.template_name)
+
     def post(self, request: HttpRequest):
         pass
 
