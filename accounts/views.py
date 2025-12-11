@@ -209,7 +209,11 @@ class ExpenseView(View):
     def edit(self, request, *args, **kwargs):
         expense_id = request.POST.get("expense_id")
         expense = Expense.objects.get(id=expense_id)
-        old_fields = {"name": expense.name, "date": expense.date, "id": expense.id}
+        print(expense.value)
+        old_fields = {"name": expense.name, "date": expense.date, "id": expense.id, "value": expense.value,
+                      "method": expense.method,
+                      "category": expense.category, "description": expense.description,
+                      "frequency": expense.frequency}
 
         return render(request, self.template_name, {"old_fields": old_fields ,"editing": True, "expenses": self.expenses})
 
@@ -267,14 +271,41 @@ class ExpenseView(View):
 
     def add_edited(self, request, *args, **kwargs):
         edit_errors = []
+        missing = []
         expense_id = request.POST.get("expense_id")
         expense = Expense.objects.get(id=expense_id)
 
-        old_fields = {"name": expense.name, "date": expense.date, "id": expense.id}
+        old_fields = {"name": expense.name, "date": expense.date, "id": expense.id, "value": expense.value,
+                      "method": expense.method,
+                      "category": expense.category, "description": expense.description,
+                      "frequency": expense.frequency}
 
         name = request.POST.get("edited_name")
+        if not name:
+            missing.append("name")
+        date = request.POST.get("edited_date") or None
+        value = request.POST.get("edited_value")
+        if not value:
+            missing.append("value")
+        method = request.POST.get("edited_method")
+        if not method:
+            missing.append("method")
+        frequency = request.POST.get("edited_frequency")
+        if not frequency:
+            missing.append("frequency")
+        category = request.POST.get("edited_category")
+        description = request.POST.get("edited_description")
 
-        edited_fields = {"name": name}
+        if missing:
+            edit_errors.append("Please fill in all required fields.")
+
+        if edit_errors:
+            return render(request, self.template_name, {"edit_errors": edit_errors,
+                                                        "expenses": self.expenses, "editing": True, "old_fields": old_fields})
+
+
+        edited_fields = {"name": name, "date": date, "value": value, "method": method, "frequency": frequency,
+                  "category": category, "description": description}
 
         for field, value in edited_fields.items():
             setattr(expense, field, value)

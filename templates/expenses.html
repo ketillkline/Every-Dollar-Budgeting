@@ -149,6 +149,19 @@ This is where the user will add their expenses. Expenses have a name, value, met
                     <input type="text" name="edited_name" id="edited_name" value="{{ old_fields.name }}">
                 </div>
 
+                <div class="field">
+                    <label for="edited_date">Date</label>
+                    <input type="date" name="edited_date" id="edited_date" value="{{ old_fields.date|date:'Y-m-d' }}">
+                </div>
+
+                <div class="field">
+                    <label for="edited_value">Amount*</label>
+                    <input type="text" name="edited_value" id="edited_value" value="{{ old_fields.value }}">
+                </div>
+
+
+
+
                 <div class="buttons-group">
                     <button type="submit" name="action" value="add_edited">Submit</button>
                 </div>
