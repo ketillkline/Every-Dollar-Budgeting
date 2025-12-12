@@ -326,12 +326,38 @@ class HomeView(LoginRequiredMixin, View):
         self.request = request
         self.user = request.user
         self.template_name = "home.html"
+        self.paycheck = None
+        self.errors = []
         return super().dispatch(request, *args, **kwargs)
 
-    def get(self, request: HttpRequest):
+    def get(self, request, *args, **kwargs):
         return render(request, self.template_name)
 
-    def post(self, request: HttpRequest):
-        pass
+    def post(self, request, *args, **kwargs):
+        paycheck = request.POST.get("paycheck")
+        if not paycheck:
+            self.errors.append("Nothing was entered.")
+        try:
+            paycheck = float(paycheck)
+        except ValueError:
+            if not paycheck:
+                pass
+            else:
+                self.errors.append("Please enter a number for the paycheck")
+
+        if self.errors:
+            return render(request, self.template_name, {"paycheck_input": False, "errors": self.errors})
+
+        return render(request, self.template_name, {"paycheck_input": True,
+                                                    "to_savings": self.get_budget_calculations(paycheck)[0],
+                                                    "free_money": self.get_budget_calculations(paycheck)[1],
+                                                    "paycheck": paycheck})
+
+    def get_budget_calculations(self, paycheck: float):
+        expenses_sum = sum(Expense.objects.values_list("value", flat=True))
+        leftover = paycheck - expenses_sum
+        to_savings = leftover * 0.7
+        free_money = leftover * 0.3
+        return [to_savings, free_money]
 
 

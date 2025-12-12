@@ -16,15 +16,32 @@ This is where the main application will live
 
 <body>
 
-
-<div class="income-grid">
-    <div class="paycheck">
-        <label for="paycheck">Paycheck</label><br>
-        <input type="text" name="paycheck" id="paycheck">
-        <button type="submit">Submit</button>
+<form method="POST">
+    {% csrf_token %}
+    <div class="income-grid">
+        <div class="paycheck">
+            <label for="paycheck">Paycheck</label><br>
+            <div class="errors">
+                {% if errors %}
+                    {% for error in errors %}
+                        <p style="color:red;">{{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <input type="text" name="paycheck" id="paycheck">
+            <button type="submit">Submit</button>
+        </div>
+        {% if paycheck_input %}
+        <div class="results">
+            <p>You got paid ${{ paycheck }}</p>
+            <p>Of that, you will save ${{ to_savings }}</p>
+            <p>You can spend ${{ free_money }}</p>
+        </div>
+    {% endif %}
     </div>
+</form>
 
-</div>
+
 
 <p class="to-expenses"><a href="expenses/">Expenses</a></p>
 </body>
