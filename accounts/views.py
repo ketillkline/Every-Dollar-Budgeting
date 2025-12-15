@@ -8,7 +8,7 @@ from django.core.validators import EmailValidator
 from django.core.exceptions import ValidationError
 from django.contrib.auth.password_validation import validate_password
 from utils.classes import Budget
-from accounts.static.accounts.database import Expense
+from accounts.static.accounts.database import Expense, Income
 from django.views import View
 
 
@@ -327,7 +327,7 @@ class HomeView(LoginRequiredMixin, View):
         self.user = request.user
         self.template_name = "home.html"
         self.paycheck = None
-        self.errors = []
+        self.errors = set()
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
@@ -336,22 +336,31 @@ class HomeView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         paycheck = request.POST.get("paycheck")
         if not paycheck:
-            self.errors.append("Nothing was entered.")
+            self.errors.add("Please fill in all fields.")
         try:
             paycheck = float(paycheck)
         except ValueError:
             if not paycheck:
                 pass
             else:
-                self.errors.append("Please enter a number for the paycheck")
+                self.errors.add("Please enter a number for the paycheck")
+        frequency = request.POST.get("frequency")
+        if not frequency:
+            self.errors.add("Please fill in all fields.")
+
+        aggression = request.POST.get("aggression")
+        if not aggression:
+            self.errors.add("Please fill in all fields.")
+
 
         if self.errors:
             return render(request, self.template_name, {"paycheck_input": False, "errors": self.errors})
 
-        return render(request, "budget.html", {"paycheck_input": True,
-                                                    "to_savings": self.get_budget_calculations(paycheck)[0],
-                                                    "free_money": self.get_budget_calculations(paycheck)[1],
-                                                    "paycheck": paycheck})
+        fields = {"value": paycheck, "frequency": frequency, "aggression": aggression}
+
+        income = Income(**fields)
+
+        return render(request, "budget.html", {"income": income})
 
     def get_budget_calculations(self, paycheck: float):
         expenses_sum = sum(Expense.objects.values_list("value", flat=True))
