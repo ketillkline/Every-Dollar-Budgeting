@@ -4,6 +4,7 @@ class Income(models.Model):
     value = models.FloatField()
     frequency = models.CharField()
     aggression = models.CharField()
+    date =models.DateField()
 
 class Expense(models.Model):
     name = models.CharField()

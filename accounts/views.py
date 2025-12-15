@@ -362,6 +362,10 @@ class HomeView(LoginRequiredMixin, View):
 
         return render(request, "budget.html", {"income": income})
 
+    def get_frequency_divider(self):
+        frequencies_dict = {}
+
+
     def get_budget_calculations(self, paycheck: float):
         expenses_sum = sum(Expense.objects.values_list("value", flat=True))
         leftover = paycheck - expenses_sum
@@ -379,4 +383,7 @@ class BudgetView(View):
 
     def post(self, request, *args, **kwargs):
         pass
+
+    def get_frequency_divider(self):
+        return "Test passed"
 
