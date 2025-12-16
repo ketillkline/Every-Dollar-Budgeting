@@ -348,7 +348,7 @@ class HomeView(LoginRequiredMixin, View):
         if not frequency:
             self.errors.add("Please fill in all fields.")
 
-        aggression = request.POST.get("aggression")
+        aggression = float(request.POST.get("aggression"))
         if not aggression:
             self.errors.add("Please fill in all fields.")
 
@@ -359,18 +359,30 @@ class HomeView(LoginRequiredMixin, View):
         fields = {"value": paycheck, "frequency": frequency, "aggression": aggression}
 
         income = Income(**fields)
-
-        return render(request, "budget.html", {"income": income})
-
-    def get_frequency_divider(self):
-        frequencies_dict = {}
+        self.get_allocations(income)
 
 
-    def get_budget_calculations(self, paycheck: float):
-        expenses_sum = sum(Expense.objects.values_list("value", flat=True))
-        leftover = paycheck - expenses_sum
-        to_savings = leftover * 0.7
-        free_money = leftover * 0.3
+        return render(request, "budget.html", {"income": income, "to_savings": self.get_allocations(income)[0],
+                                               "free_money": self.get_allocations(income)[1]})
+
+    def get_expense_values(self, income: Income):
+        frequencies_dict = {"Monthly": 1, "Bi-Weekly": 2, "Weekly": 4, "Daily": 30}
+        expenses = list(Expense.objects.all())
+        aligned_frequency = frequencies_dict.get(income.frequency)
+        expense_values = []
+        for expense in expenses:
+            frequency_id = frequencies_dict.get(expense.frequency)
+            new_value = (frequency_id/aligned_frequency) * expense.value
+            expense_values.append(new_value)
+        return sum(expense_values)
+
+
+
+    def get_allocations(self, income: Income):
+        aggression = income.aggression
+        leftover = income.value - self.get_expense_values(income)
+        to_savings = leftover * aggression
+        free_money = leftover - to_savings
         return [to_savings, free_money]
 
 
