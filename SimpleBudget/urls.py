@@ -20,12 +20,12 @@ from accounts import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('login/', views.login_view, name='login'),
-    path('signup/', views.signup_view, name='signup'),
-    path('recovery/', views.recovery_view, name='recovery'),
-    path('reset/<str:username>/', views.reset_view, name='reset'),
+    path('login/', views.AuthViews.login_view, name='login'),
+    path('signup/', views.AuthViews.signup_view, name='signup'),
+    path('recovery/', views.AuthViews.recovery_view, name='recovery'),
+    path('reset/<str:username>/', views.AuthViews.reset_view, name='reset'),
     path('', views.HomeView.as_view(), name='home'),
-    path('logout/', views.logout_view, name='logout'),
+    path('logout/', views.AuthViews.logout_view, name='logout'),
     path('expenses/', views.ExpenseView.as_view(), name='expenses'),
     path('budget/', views.BudgetView.as_view(), name='budget')
 ]
