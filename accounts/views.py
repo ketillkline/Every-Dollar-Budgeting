@@ -10,6 +10,7 @@ from django.contrib.auth.password_validation import validate_password
 from utils.classes import Budget
 from accounts.static.accounts.database import Expense, Income
 from django.views import View
+from datetime import date, datetime, timedelta
 
 
 def login_view(request: HttpRequest):
@@ -365,10 +366,12 @@ class HomeView(LoginRequiredMixin, View):
         income = Income(**fields)
         self.get_allocations(income)
         expense_total = self.get_expense_values(income)
+        end_date = self.get_end_date(income, date)
 
 
         return render(request, "budget.html", {"income": income, "to_savings": self.get_allocations(income)[0],
-                                               "free_money": self.get_allocations(income)[1], "expense_total": expense_total})
+                                               "free_money": self.get_allocations(income)[1], "expense_total": expense_total,
+                                               "end_date": end_date})
 
     def get_expense_values(self, income: Income):
         frequencies_dict = {"Monthly": 1, "Bi-Weekly": 2, "Weekly": 4, "Daily": 30}
@@ -389,6 +392,18 @@ class HomeView(LoginRequiredMixin, View):
         to_savings = round(leftover * aggression, 2)
         free_money = round(leftover - to_savings, 2)
         return [to_savings, free_money]
+
+    def get_end_date(self, income: Income, date: str):
+        date_object = datetime.strptime(date, "%Y-%m-%d").date()
+        frequency_dict = {"Bi-Weekly": 14, "Weekly": 7, "Daily": 1}
+        if income.frequency == "Monthly":
+
+            return end_date
+        else:
+            days_added = frequency_dict.get(income.frequency)
+            end_date = date_object + timedelta(days=days_added)
+            return end_date
+
 
 
 class BudgetView(View):
