@@ -65,9 +65,9 @@ This project is the next step above that.
 The name Every Dollar comes from Dave Ramsey’s book The <i>Total Money Makeover</i>, where he emphasizes that every dollar should have a purpose. This application is built on that same idea: ensuring that every single dollar has a name and a destination.
 
 # To-Add on README:
-How to run
-How to run tests
-Project Structure
+✔️ How to run<br>
+🧪 How to run tests<br>
+🏗️ Project Structure<br>
 
 ### Started this Journey: October 13th, 2025
 
