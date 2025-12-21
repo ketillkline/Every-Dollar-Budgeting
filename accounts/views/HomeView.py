@@ -45,7 +45,9 @@ class HomeView(LoginRequiredMixin, View):
         if not date:
             self.errors.add("Please fill in all fields.")
 
-        fields = {"value": paycheck, "frequency": frequency, "aggression": aggression, "date": date}
+        fields = {"value": paycheck, "frequency": frequency, "aggression": aggression, "date": date,
+                  "user": self.user}
+
         if self.errors:
             return render(request, self.template_name, {"paycheck_input": False, "errors": self.errors, "fields": fields})
 
@@ -62,7 +64,7 @@ class HomeView(LoginRequiredMixin, View):
 
     def get_expense_values(self, income: Income):
         frequencies_dict = {"Monthly": 1, "Bi-Weekly": 2, "Weekly": 4, "Daily": 30}
-        expenses = list(Expense.objects.all())
+        expenses = list(Expense.objects.filter(user=self.user).all())
         aligned_frequency = frequencies_dict.get(income.frequency)
         expense_values = []
         for expense in expenses:

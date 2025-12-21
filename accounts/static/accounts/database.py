@@ -1,12 +1,16 @@
 from django.db import models
+from django.contrib.auth.models import User
+
 
 class Income(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     value = models.FloatField()
     frequency = models.CharField()
     aggression = models.CharField()
     date =models.DateField()
 
 class Expense(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField()
     date = models.DateField(null=True, blank=True)
     value = models.FloatField()

@@ -9,7 +9,7 @@ class ExpenseView(View):
         self.user = request.user
         self.template_name = "expenses.html"
         self.errors = []
-        self.expenses = Expense.objects.all().order_by("-date")
+        self.expenses = Expense.objects.filter(user=self.user).all().order_by("-date")
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
@@ -36,20 +36,20 @@ class ExpenseView(View):
 
 
     def clear_all(self, request, *args, **kwargs):
-        Expense.objects.all().delete()
+        Expense.objects.filter(user=request.user).all().delete()
         return render(request, self.template_name, {"expenses": self.expenses})
 
     def clear_single(self, request, *args, **kwargs):
         expense_id = request.POST.get("expense_id")
         if not expense_id:
             self.errors.append("Invalid ID. Please try again")
-        Expense.objects.filter(id=expense_id).delete()
-        expenses = Expense.objects.all().order_by("-date")
+        Expense.objects.filter(id=expense_id, user=request.user).delete()
+        expenses = Expense.objects.filter(user=self.user).order_by("-date")
         return render(request, self.template_name, {"expenses": expenses})
 
     def edit(self, request, *args, **kwargs):
         expense_id = request.POST.get("expense_id")
-        expense = Expense.objects.get(id=expense_id)
+        expense = Expense.objects.get(id=expense_id, user=request.user)
         print(expense.value)
         old_fields = {"name": expense.name, "date": expense.date, "id": expense.id, "value": expense.value,
                       "method": expense.method,
@@ -104,9 +104,9 @@ class ExpenseView(View):
 
         # --------- GENERATING OBJECT ----------------------------------------------------------------------- #
 
-        new_expense = Expense.objects.create(**fields)
+        new_expense = Expense.objects.create(**fields, user=self.user)
         print(f"added {name} ")
-        expenses = Expense.objects.all().order_by("-date")
+        expenses = Expense.objects.all().filter(user=self.user).order_by("-date")
         return render(request, self.template_name, {"expenses": expenses})
 
 
@@ -114,7 +114,7 @@ class ExpenseView(View):
         edit_errors = []
         missing = []
         expense_id = request.POST.get("expense_id")
-        expense = Expense.objects.get(id=expense_id)
+        expense = Expense.objects.get(id=expense_id, user=request.user)
 
         old_fields = {"name": expense.name, "date": expense.date, "id": expense.id, "value": expense.value,
                       "method": expense.method,
@@ -153,6 +153,6 @@ class ExpenseView(View):
 
         expense.save()
 
-        expenses = Expense.objects.all().order_by("-date")
+        expenses = Expense.objects.filter(user=request.user).all().order_by("-date")
 
         return render(request, self.template_name, {"expenses": expenses, "editing": False})
