@@ -13,53 +13,44 @@
 <div class="container">
 
     <div class="paycheck-box">
-        <label for="paycheck">Paycheck</label><br>
+        <label for="paycheck">Paycheck</label>
+        <label for="start-date">Start</label>
+        <label for="end-date">Until</label><br>
         <input type="number" name="paycheck" id="paycheck">
         <input type="date" name="start-date" id="start-date">
         <input type="date" name="end-date" id="end-date">
         <button type="submit">Submit</button>
     </div>
 
-    <div class="leftover-money">
-        <p>Leftover</p>
-    </div>
-
-    <div class="savings-table">
+    <div class="bills-table">
         <table border="1">
             <tr>
-                <th>I'll save</th>
-                <th>I can spend</th>
-                <th>Until</th>
+                <th>Name</th>
+                <th>Amount</th>
+                <th>Pay Day</th>
             </tr>
             {% for bill in bills %}
             <tr>
-                <td>{{ bill.name }}</td>
-                <td>{{ bill.amount }}</td>
-                <td>{{ bill.day }}</td>
+                <td>{{ bills.name }}</td>
+                <td>{{ bills.amount }}</td>
+                <td>{{ bills.day }}</td>
             </tr>
             {% endfor %}
+            <tr>
+                <td colspan="3">
+                    <button type="submit">+</button>
+                </td>
+            </tr>
         </table>
 
     </div>
 
-    <div class="bills-table">
-     <table border="1">
-         <tr>
-             <th>Name</th>
-             <th>Amount</th>
-             <th>Pay Day</th>
-         </tr>
+    {% if paycheck_submitted %}
+    <div class="money-wheel">
 
-         <tr>
-             <td colspan="3">
-                 <button type="submit">
-                     +
-                 </button>
-             </td>
-         </tr>
-
-     </table>
     </div>
+    {% endif %}
+
 
 </div>
 
