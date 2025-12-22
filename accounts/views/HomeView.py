@@ -95,3 +95,13 @@ class HomeView(LoginRequiredMixin, View):
             days_added = frequency_dict.get(income.frequency)
             end_date = date_object + timedelta(days=days_added)
             return end_date
+
+
+class NewView(View):
+    def dispatch(self, request, *args, **kwargs):
+        self.request = request
+        self.template_name = "new_home.html"
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name)
