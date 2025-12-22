@@ -1,4 +1,4 @@
-# 💸 Every Dollar Budgeting Pre-Alpha (Python / Django) 💸
+# 💸 Every Dollar Budgeting Alpha (Python / Django) 💸
 My take on a budgeting app, orginating from my present need to get my own finances in order. This web 
 application is being built using Python 3.11, Django, and HTML in PyCharm on Windows 11. Includes data persistance and
 authentication
@@ -6,31 +6,29 @@ authentication
 # ✨ In-Scope Project Feature Checklist
 
 ## Income Management
-- [x] 💸 Add incomes 
-- [x] 📅 Add income dates 
-- [x] ⌚ Set income Frequency 
-- [x] ☠️ Set savings aggressiveness for income 
+- [] Add paycheck
+- [] Add start and end date
+- [] Calculate frequency manually
 
-## Expense Management
-- [x] 🖱️ Add multiple expenses 
+## Leftover Money
+- [] Add progress bar to show leftover money
+- [] Add popup to add expense and take away money
 
-### Expense Fields
-- [x] 📛 Name 
-- [x] 📅 Date 
-- [x] 💰 Value 
-- [x] ⌚ Frequency 
-- [x] 💳 Method
-- [x] 🗃️ Category 
-- [x] ✍️ Description 
+## Bill Management
+- [] Add Bills with Name, Amount, and Day
+- [] Dynamic "Add new" button with "+"
 
-## 👮 Authentication & Account Management
-- [x] 👮 User authentication
-- [x] 🥚 Account creation
-- [x] 🛡️ Account recovery via email
+## Saving & Spending Allocations
+- [] Add aggressiveness slider bar that changes color and displays aggressiveness
+- [] Show user what they'll save
+- [] Show user what they can spend
+
+## Transaction History
+- [] Add separate page that tracks expenses with name, value, and date
 
 # 🤯 Out-Scope Feature Checklist
-- [] ✨ Change category to dropdown instead of input field
-- [] ✨ Ability to add custom frequency, method, and category in drop-down
+- [] Tax APIs
+- [] Banking APIs
 
 
 # What is "aggressiveness"?
@@ -43,8 +41,7 @@ remaining money will be saved and how much can be spent.
 - Everything = 100% saved ☠️
 
 # Project Status
-As of December 19, 2025, this project is not finished, but it is close. 
-I can see it moving into the alpha version soon.
+As of December 22, 2025, Every Dollar Budgeting has moved into its Alpha
 
 # Project Background
 This is my second official project using Django. My first was the Symbol Authentication application,
