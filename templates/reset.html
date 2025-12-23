@@ -17,24 +17,30 @@ Upper, Lower, Special, Number
 </head>
 
 <body>
-<h1>Let's set your new password!</h1>
-{% if errors %}
-    {% for error in errors %}
-        <li style="color:red;">{{ error }}</li>
-    {% endfor %}
-{% endif %}
-<form method="POST">
-    {% csrf_token %}
+<div class="center-box">
+    <h1 class="header">Let's set your new password!</h1>
 
-    <label for="password">New Password:</label><br>
-    <input type="password" id="password" name="password"><br><br>
+    {% if errors %}
+    <div class="errors">
+        {% for error in errors %}
+            <li style="color:red;">{{ error }}</li>
+        {% endfor %}
+    </div>
+    {% endif %}
+    <form method="POST">
+        {% csrf_token %}
 
-    <label for="re_password">Confirm New Password:</label><br>
-    <input type="password" id="re_password" name="re_password"><br><br>
+        <label for="password">New Password:</label><br>
+        <input type="password" id="password" name="password"><br><br>
 
-    <button type="submit">Set New Password</button>
+        <label for="re_password">Confirm New Password:</label><br>
+        <input type="password" id="re_password" name="re_password"><br><br>
 
-</form>
+        <button type="submit">Set New Password</button>
+
+    </form>
+</div>
+
 
 
 </body>
