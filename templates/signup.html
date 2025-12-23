@@ -28,14 +28,16 @@ Email (check validation)
 
 
 <div class="center-box">
-    <h1>Let's Set-up Your Account</h1>
-    {% if errors %}
-        <ul class="errors">
-            {% for error in errors %}
-                <li style="color:red;">{{ error }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+    <h1 class="header">Let's Set-up Your Account</h1>
+    <div class="errors">
+        {% if errors %}
+            <ul class="errors">
+                {% for error in errors %}
+                    <li style="color:red;">{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
     <form method="POST">
         {% csrf_token %}
         <label for="username">Username:</label><br>
@@ -45,26 +47,27 @@ Email (check validation)
         <input type="email" id="email" name="email" value="{{ email }}"><br><br>
 
         <div class="password-container">
-            <label for="password">Password</label>:
-            <span class="info-icon">ⓘ</span><br>
+            <label for="password">Password:</label><br>
+
+            <input type="password" name="password" id="password">
 
             <div class="tooltip-box">
                 Password must include:<br>
-                -8 characters<br>
-                -1 uppercase<br>
-                -1 lowercase<br>
-                -1 number<br>
-                -1 special character (e.g. !@#$$%?)
+                8 characters<br>
+                1 uppercase<br>
+                1 lowercase<br>
+                1 number<br>
+                1 special character (e.g. !@#$$%?)
             </div>
 
-            <input type="password" name="password" id="password"><br><br>
+            <br><br>
 
         </div><br>
 
         <label for="confirm_password">Confirm Password:</label><br>
         <input type="password" id="confirm_password" name="confirm_password">
 
-        <p><a href="/login">Already have an account?</a></p>
+        <p class="form-link"><a href="/login">Already have an account?</a></p>
         <button type="submit">Create Account</button>
     </form>
 </div>
