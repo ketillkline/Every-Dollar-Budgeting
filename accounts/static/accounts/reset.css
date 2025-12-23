@@ -78,3 +78,48 @@ body {
     content: "⚠️ ";
     font-size: 0.9rem;
 }
+
+.password-container {
+    position: relative;
+    display: inline-block;
+}
+
+/* the little i icon */
+.info-icon {
+    position: absolute;
+    background: lightblue;
+    color: white;
+    border-radius: 50%;
+    padding: 3px 6px;
+    padding-left: 5px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+/* the popup */
+.tooltip-box {
+    position: absolute;
+    top: 7%;
+    left: 105%; /* Move to the right of the icon */
+    background: rgb(102, 179, 204);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    width: 200px;
+
+    /* invisible + slightly shifted */
+    opacity: 0;
+    transform: translateX(-10px);
+    pointer-events: none;
+
+    /* smooth animation */
+    transition:
+        opacity 0.3s ease,
+        transform 0.3s ease;
+}
+
+/* the hover state */
+.password-container:hover .tooltip-box {
+    opacity: 1;
+    transform: translateX(0px);
+}

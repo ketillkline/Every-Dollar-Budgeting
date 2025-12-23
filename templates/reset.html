@@ -29,12 +29,22 @@ Upper, Lower, Special, Number
     {% endif %}
     <form method="POST">
         {% csrf_token %}
+        <div class="password-container">
+            <label for="password">New Password:</label><br>
+            <input type="password" id="password" name="password"><br><br>
+            <div class="tooltip-box">
+                Password must include:<br>
+                8 characters<br>
+                1 uppercase<br>
+                1 lowercase<br>
+                1 number<br>
+                1 special character (e.g. !@#$$%?)
+            </div>
 
-        <label for="password">New Password:</label><br>
-        <input type="password" id="password" name="password"><br><br>
+            <label for="re_password">Confirm New Password:</label><br>
+            <input type="password" id="re_password" name="re_password"><br><br>
+        </div><br>
 
-        <label for="re_password">Confirm New Password:</label><br>
-        <input type="password" id="re_password" name="re_password"><br><br>
 
         <button type="submit">Set New Password</button>
 
