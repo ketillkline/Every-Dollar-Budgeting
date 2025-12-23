@@ -1,3 +1,60 @@
-.label-with-tooltip{
+body {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: lightblue;
+    margin: 0;
+}
 
+.center-box {
+    width: 400px;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.password-container {
+    position: relative;
+    display: inline-block;
+}
+
+/* the little i icon */
+.info-icon {
+    background: lightblue;
+    color: white;
+    border-radius: 50%;
+    padding: 3px 6px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+/* the popup */
+.tooltip-box {
+    position: absolute;
+    top: 7%;
+    left: 105%; /* Move to the right of the icon */
+    background: rgb(102, 179, 204);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    width: 200px;
+
+    /* invisible + slightly shifted */
+    opacity: 0;
+    transform: translateX(-10px);
+    pointer-events: none;
+
+    /* smooth animation */
+    transition:
+        opacity 0.3s ease,
+        transform 0.3s ease;
+}
+
+/* the hover state */
+.password-container:hover .tooltip-box {
+    opacity: 1;
+    transform: translateX(0px);
 }
