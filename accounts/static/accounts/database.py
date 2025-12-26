@@ -18,3 +18,10 @@ class Expense(models.Model):
     frequency = models.CharField()
     category = models.CharField()
     description = models.CharField(max_length=200)
+
+
+class Bill(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField()
+    amount = models.FloatField()
+    pay_day = models.CharField(max_length=2)
