@@ -49,7 +49,11 @@
                         <td>{{ bill.name }}</td>
                         <td>{{ bill.amount }}</td>
                         <td>{{ bill.pay_day }}</td>
-                        <td><button type="button" id="edit-bill">Edit</button></td>
+                        <td>
+                            <button type="button" id="edit-bill">Edit</button>
+                            <button type="submit" name="action" value="delete_bill">Delete</button>
+                            <input type="hidden" name="bill_id" value="{{ bill.id }}">
+                        </td>
                     </tr>
                     {% endfor %}
                     <tr id="add-row">

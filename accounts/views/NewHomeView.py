@@ -23,8 +23,8 @@ class NewHomeView(View):
                 return self.add_bill(request)
             case "edit_bill":
                 return self.edit_bill(request)
-            case "clear_bill":
-                return self.clear_bill(request)
+            case "delete_bill":
+                return self.delete_bill(request)
 
 
     def add_bill(self, request: HttpRequest):
@@ -47,6 +47,13 @@ class NewHomeView(View):
         bills = Bill.objects.all().filter(user=self.user).order_by("-pay_day")
         print("it works!")
         return render(request, self.template_name, {"bills": bills})
+
+    def delete_bill(self, request: HttpRequest):
+        bill_id = request.POST.get("bill_id")
+        Bill.objects.filter(user=self.user, id=bill_id).delete()
+        bills = Bill.objects.filter(user=self.user).order_by("-pay_day")
+        return render(request, self.template_name, {"bills": bills})
+
 
 
 
