@@ -1,8 +1,11 @@
 class BillManager {
     constructor(){
+        this.addingBill = false;
+
         this.addButton = document.getElementById("bill_trigger");
         this.tbody = document.querySelector(".bills-body");
         this.setupEvents();
+        this.updateUI();
     }
     setupEvents() {
         this.addButton.addEventListener("click", () => {
@@ -10,7 +13,17 @@ class BillManager {
         })
     }
 
+    updateUI() {
+        if (this.addingBill) {
+            this.addButton.style.display = "none";
+        } else {
+            this.addButton.style.display = "block";
+        }
+    }
+
+
     addBillRow(){
+        this.add_new_clicked = true;
         const row = document.createElement("tr")
         row.innerHTML = `
         <td><input type="text" name="bill_name" placeholder="Name"></td>
@@ -27,6 +40,7 @@ class BillManager {
 
         cancelButton.addEventListener("click", () => {
             row.remove();
+            this.addingBill = false;
         })
     }
 }

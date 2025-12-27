@@ -14,7 +14,7 @@ class NewHomeView(View):
 
     def get(self, request, *args, **kwargs):
         bills = Bill.objects.all().filter(user=self.user).order_by("-pay_day")
-        return render(request, self.template_name, {"bills": bills})
+        return render(request, self.template_name, {"bills": bills, "add_new_clicked": False})
 
     def post(self, request, *args, **kwargs):
         action = request.POST.get("action")
@@ -46,7 +46,7 @@ class NewHomeView(View):
         new_bill = Bill.objects.create(**fields, user=self.user)
         bills = Bill.objects.all().filter(user=self.user).order_by("-pay_day")
         print("it works!")
-        return render(request, self.template_name, {"bills": bills})
+        return render(request, self.template_name, {"bills": bills, "add_new_clicked": False})
 
     def delete_bill(self, request: HttpRequest):
         bill_id = request.POST.get("bill_id")
