@@ -2,7 +2,7 @@ from django.http import HttpRequest
 from django.shortcuts import render, redirect
 from django.views import View
 from accounts.static.accounts.database import Bill, Income
-
+from django.db.models import Sum
 
 class NewHomeView(View):
     def dispatch(self, request, *args, **kwargs):
@@ -45,12 +45,12 @@ class NewHomeView(View):
         fields = {"name": name, "amount": amount, "pay_day": pay_day}
 
         if self.errors:
-
             return render(request, self.template_name, {"errors": self.errors, "bill_fields": fields})
 
         new_bill = Bill.objects.create(**fields, user=self.user)
         bills = Bill.objects.all().filter(user=self.user).order_by("-pay_day")
-        return render(request, self.template_name, {"bills": bills, "add_new_clicked": False})
+        total_bills = Bill.objects.aggregate(total=Sum("amount"))
+        return render(request, self.template_name, {"bills": bills, "total_bills": total_bills["total"] or 0})
 
     def delete_bill(self, request: HttpRequest):
         bill_id = request.POST.get("bill_id")
@@ -74,8 +74,9 @@ class NewHomeView(View):
         if self.income_errors:
             return render(request, self.template_name, {"fields": fields})
 
+        bills = Bill.objects.all().filter(user=self.user).order_by("-pay_day")
         income = Income.objects.create(**fields, user=self.user)
-        return render(request, self.template_name, {"income": income})
+        return render(request, self.template_name, {"income": income, "bills": bills})
 
 
 

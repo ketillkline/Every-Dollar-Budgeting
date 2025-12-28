@@ -57,6 +57,7 @@
                                 <button type="button" id="edit-bill">Edit</button>
                                 <button type="submit" name="action" value="delete_bill">Delete</button>
                                 <input type="hidden" name="bill_id" value="{{ bill.id }}">
+                                <input type="hidden" name="total_bills" id="total_bills" value="{{ total_bills }}">
                             </td>
                         </tr>
                         {% endfor %}
