@@ -3,6 +3,7 @@
 const paycheck_amount = document.getElementById("paycheck_amount").value;
 console.log(paycheck_amount);
 const bills = document.getElementById("total_bills")
+console.log(bills.value);
 let bills_amount;
 if (!bills){
     bills_amount = 0;

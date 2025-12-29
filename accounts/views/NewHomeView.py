@@ -15,7 +15,8 @@ class NewHomeView(View):
 
     def get(self, request, *args, **kwargs):
         bills = Bill.objects.all().filter(user=self.user).order_by("-pay_day")
-        return render(request, self.template_name, {"bills": bills, "add_new_clicked": False})
+        total_bills = Bill.objects.aggregate(total=Sum("amount"))
+        return render(request, self.template_name, {"bills": bills, "total_bills": total_bills['total']})
 
     def post(self, request, *args, **kwargs):
         action = request.POST.get("action")
@@ -50,7 +51,7 @@ class NewHomeView(View):
         new_bill = Bill.objects.create(**fields, user=self.user)
         bills = Bill.objects.all().filter(user=self.user).order_by("-pay_day")
         total_bills = Bill.objects.aggregate(total=Sum("amount"))
-        return render(request, self.template_name, {"bills": bills, "total_bills": total_bills["total"] or 0})
+        return render(request, self.template_name, {"bills": bills, "total_bills": 9})
 
     def delete_bill(self, request: HttpRequest):
         bill_id = request.POST.get("bill_id")
@@ -76,7 +77,8 @@ class NewHomeView(View):
 
         bills = Bill.objects.all().filter(user=self.user).order_by("-pay_day")
         income = Income.objects.create(**fields, user=self.user)
-        return render(request, self.template_name, {"income": income, "bills": bills})
+        total_bills = Bill.objects.aggregate(total=Sum("amount"))
+        return render(request, self.template_name, {"income": income, "bills": bills, "total_bills": total_bills['total']})
 
 
 
