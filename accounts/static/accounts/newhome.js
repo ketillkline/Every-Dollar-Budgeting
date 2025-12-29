@@ -33,7 +33,7 @@ class BillManager {
         <td><input type="number" name="bill_amount" placeholder="Amount"></td>
         <td><input type="number" name="bill_pay_day" placeholder="Pay Day"></td>
         <td>
-            <button type="submit" name="action" value="add_bill">Save</button>
+            <button type="button" name="action" value="add_bill">Save</button>
             <button type="button" class="cancel-bill">Cancel</button>
         </td>
         `
