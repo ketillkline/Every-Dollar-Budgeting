@@ -49,12 +49,16 @@
 
                     <tbody class="bills-body">
                         {% for bill in bills %}
-                        <tr id="{{ bill.name }} row">
+                        <tr class="bill-row" data-bill-id="{{ bill.id }}"
+                        data-name="{{ bill.name }}"
+                        data-amount="{{ bill.amount }}"
+                        data-payday="{{ bill.pay_day }}"
+                        >
                             <td>{{ bill.name }}</td>
                             <td>{{ bill.amount }}</td>
                             <td>{{ bill.pay_day }}</td>
                             <td>
-                                <button type="button" id="edit_bill_trigger">Edit</button>
+                                <button type="button" class="edit_bill_trigger">Edit</button>
                                 <button type="submit" name="action" value="delete_bill">Delete</button>
                                 <input type="hidden" name="bill_id" value="{{ bill.id }}">
                                 <input type="hidden" name="total_bills" id="total_bills" value="{{ total_bills }}">

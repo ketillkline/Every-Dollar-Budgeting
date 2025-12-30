@@ -22,7 +22,8 @@ class NewHomeView(View):
     def get(self, request, *args, **kwargs):
         bills = Bill.objects.all().filter(user=self.user).order_by("-pay_day")
         total_bills = Bill.objects.aggregate(total=Sum("amount"))
-        return render(request, self.template_name, {"bills": bills, "total_bills": total_bills['total']})
+        return render(request, self.template_name, {"bills": bills, "total_bills": total_bills['total'],
+                                                    "income": self.income})
 
     def post(self, request, *args, **kwargs):
         action = request.POST.get("action")
