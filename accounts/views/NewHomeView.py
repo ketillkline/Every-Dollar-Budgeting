@@ -107,8 +107,10 @@ class NewHomeView(View):
         target_bill.save()
 
         bills = Bill.objects.filter(user=self.user).all().order_by("-pay_day")
+        total_bills = Bill.objects.aggregate(total=Sum("amount"))
 
-        return render(request, self.template_name, {"bills": bills, "income": self.income})
+        return render(request, self.template_name, {"bills": bills, "income": self.income,
+                                                    "total_bills": total_bills['total'] })
 
 
 
