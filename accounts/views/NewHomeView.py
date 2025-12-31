@@ -63,6 +63,7 @@ class NewHomeView(View):
         return render(request, self.template_name, {"bills": bills, "total_bills": total_bills['total'], "income": self.income})
 
     def delete_bill(self, request: HttpRequest):
+        print("deleting")
         bill_id = request.POST.get("bill_id")
         Bill.objects.filter(user=self.user, id=bill_id).delete()
         bills = Bill.objects.filter(user=self.user).order_by("-pay_day")

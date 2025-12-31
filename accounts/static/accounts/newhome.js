@@ -99,6 +99,10 @@ class BillManager {
     }
 
     handleSubmit(e){
+        const action = e.submitter?.value;
+        if (action == "delete_bill"){
+            return;
+        }
         const activeRow = this.tbody.querySelector("tr:last-child");
 
         if (!activeRow) return;
