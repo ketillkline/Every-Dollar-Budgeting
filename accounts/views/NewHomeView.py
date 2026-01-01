@@ -74,13 +74,13 @@ class NewHomeView(View):
     def add_income(self, request: HttpRequest):
         paycheck = request.POST.get("paycheck")
         if not paycheck:
-            self.income_errors.add("Please fill in all required fields")
+            self.income_errors.add("New Income not submitted. Please fill in all required fields.")
         start_date = request.POST.get("start_date")
         if not start_date:
-            self.income_errors.add("Please fill in all required fields")
+            self.income_errors.add("New Income not submitted. Please fill in all required fields.")
         end_date = request.POST.get("end_date")
         if not end_date:
-            self.income_errors.add("Please fill in all required fields")
+            self.income_errors.add("New Income not submitted. Please fill in all required fields.")
 
         fields = {"amount": paycheck, "start_date": start_date, "end_date": end_date}
         bills = bills = Bill.objects.all().filter(user=self.user).order_by("-pay_day")
@@ -114,6 +114,12 @@ class NewHomeView(View):
 
         return render(request, self.template_name, {"bills": bills, "income": self.income,
                                                     "total_bills": total_bills['total'] })
+
+    def get_date_object(self, date: str):
+        pass
+
+    def get_pay_period(self, start_date, end_date):
+        pass
 
 
 

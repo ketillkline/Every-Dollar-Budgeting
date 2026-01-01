@@ -4,6 +4,7 @@ class BillManager {
         this.form = this.table.closest("form");
 
         this.addButton = document.getElementById("bill_trigger");
+        this.editButton = null;
         this.updateUI(this.addButton, "show");
         this.editingRow = null;
 
@@ -70,6 +71,7 @@ class BillManager {
 
     editBillRow(elements, old_info, row) {
         this.editingRow = row;
+        this.updateUI(this.addButton, "hide");
         for (const element of elements){
             this.updateUI(element, "hide");
         }
@@ -92,6 +94,7 @@ class BillManager {
         cancelButton.addEventListener("click", () => {
             row.innerHTML = originalHTML;
             elements = row.querySelectorAll(".delete_button, .edit_bill_trigger");
+            this.updateUI(this.addButton, "show");
             for (const element of elements){
                 this.updateUI(element, "show");
             }
@@ -107,7 +110,7 @@ class BillManager {
             return;
         }
 
-
+        // ternary operator
         const activeRow =
             action == "save_edited_bill"
                 ? this.editingRow
@@ -123,7 +126,7 @@ class BillManager {
 
             const name = nameInput?.value.trim();
             const amount = amountInput?.value.trim();
-            const payday = paydayInput?.value.trim();
+            const payday =paydayInput?.value.trim();
             console.log("Editing", name, amount, payday)
 
             if (!name || !amount || !payday){
@@ -138,7 +141,7 @@ class BillManager {
 
         const nameInput = activeRow.querySelector('[name="bill_name"]');
         const amountInput = activeRow.querySelector('[name="bill_amount"]');
-        const paydayInput = activeRow.querySelector('[name="bill_payday"]');
+        const paydayInput = activeRow.querySelector('[name="bill_pay_day"]');
 
         const name = nameInput?.value.trim();
         const amount = amountInput?.value.trim();
