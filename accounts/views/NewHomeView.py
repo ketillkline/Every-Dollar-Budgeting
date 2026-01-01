@@ -4,6 +4,7 @@ from django.views import View
 from accounts.static.accounts.database import Bill, Income
 from django.db.models import Sum
 from django.core.exceptions import ObjectDoesNotExist
+from datetime import datetime, date, timedelta
 
 class NewHomeView(View):
     def dispatch(self, request, *args, **kwargs):
@@ -20,10 +21,7 @@ class NewHomeView(View):
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        bills = Bill.objects.all().filter(user=self.user).order_by("-pay_day")
-        total_bills = Bill.objects.aggregate(total=Sum("amount"))
-        return render(request, self.template_name, {"bills": bills, "total_bills": total_bills['total'],
-                                                    "income": self.income})
+        return render(request, self.template_name, self.get_base_context())
 
     def post(self, request, *args, **kwargs):
         action = request.POST.get("action")
@@ -51,25 +49,20 @@ class NewHomeView(View):
             self.errors.add("Please fill in all required fields")
 
         fields = {"name": name, "amount": amount, "pay_day": pay_day}
-        bills = Bill.objects.filter(user=self.user).all().order_by("-pay_day")
 
         if self.errors:
-            return render(request, self.template_name, {"errors": self.errors, "bill_fields": fields,
-                                                        "income": self.income, "bills": bills})
+            return render(request, self.template_name, {"errors": self.errors,
+                                                        **self.get_base_context()})
 
         new_bill = Bill.objects.create(**fields, user=self.user)
-        bills = Bill.objects.all().filter(user=self.user).order_by("-pay_day")
-        total_bills = Bill.objects.aggregate(total=Sum("amount"))
-        return render(request, self.template_name, {"bills": bills, "total_bills": total_bills['total'], "income": self.income})
+        return render(request, self.template_name, self.get_base_context())
 
     def delete_bill(self, request: HttpRequest):
         print("deleting")
         bill_id = request.POST.get("bill_id")
         Bill.objects.filter(user=self.user, id=bill_id).delete()
-        bills = Bill.objects.filter(user=self.user).order_by("-pay_day")
-        total_bills = Bill.objects.aggregate(total=Sum("amount"))
 
-        return render(request, self.template_name, {"bills": bills, "income": self.income, "total_bills": total_bills['total']})
+        return render(request, self.template_name, self.get_base_context())
 
     def add_income(self, request: HttpRequest):
         paycheck = request.POST.get("paycheck")
@@ -83,18 +76,13 @@ class NewHomeView(View):
             self.income_errors.add("New Income not submitted. Please fill in all required fields.")
 
         fields = {"amount": paycheck, "start_date": start_date, "end_date": end_date}
-        bills = bills = Bill.objects.all().filter(user=self.user).order_by("-pay_day")
-        total_bills = Bill.objects.aggregate(total=Sum("amount"))
 
         if self.income_errors:
-            return render(request, self.template_name, {"fields": fields, "income": self.income,
-                                                        "errors": self.income_errors, "bills": bills,
-                                                        "total_bills": total_bills['total']})
+            return render(request, self.template_name, {"fields": fields,
+                                                        "errors": self.income_errors, **self.get_base_context()})
+        new_income = Income.objects.create(**fields)
 
-        bills = Bill.objects.all().filter(user=self.user).order_by("-pay_day")
-        self.income = Income.objects.create(**fields, user=self.user)
-        total_bills = Bill.objects.aggregate(total=Sum("amount"))
-        return render(request, self.template_name, {"income": self.income, "bills": bills, "total_bills": total_bills['total']})
+        return render(request, self.template_name, self.get_base_context())
 
     def save_edited_bill(self, request: HttpRequest):
         bill_id = request.POST.get("bill_id")
@@ -109,17 +97,38 @@ class NewHomeView(View):
             setattr(target_bill, field, value)
         target_bill.save()
 
-        bills = Bill.objects.filter(user=self.user).all().order_by("-pay_day")
-        total_bills = Bill.objects.aggregate(total=Sum("amount"))
 
-        return render(request, self.template_name, {"bills": bills, "income": self.income,
-                                                    "total_bills": total_bills['total'] })
+
+        return render(request, self.template_name, self.get_base_context())
 
     def get_date_object(self, date: str):
-        pass
+        return datetime.strptime(date, "%Y-%m-%d").date()
 
     def get_pay_period(self, start_date, end_date):
-        pass
+        start_date = self.get_date_object(start_date)
+        end_date = self.get_date_object(end_date)
+        delta = end_date - start_date
+        return delta.days
+
+    def get_base_context(self):
+        bills = Bill.objects.filter(user=self.user).all().order_by("pay_day")
+        total_bills = total_bills = Bill.objects.aggregate(total=Sum("amount"))
+        income = None
+        pay_period_days = None
+        if self.income:
+            income = self.income
+            start_date = self.income.start_date
+            end_date = self.income.end_date
+            pay_period_days = self.get_pay_period(start_date, end_date)
+        return {
+            "bills": bills,
+            "total_bills": total_bills['total'],
+            "income": income,
+            "pay_period_days": pay_period_days,
+
+        }
+
+
 
 
 
