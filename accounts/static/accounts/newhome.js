@@ -51,12 +51,20 @@ class BillManager {
         row.innerHTML = `
         <td><input type="text" name="bill_name" placeholder="Name"></td>
         <td><input type="number" name="bill_amount" placeholder="Amount"></td>
-        <td><input type="number" name="bill_pay_day" placeholder="Pay Day"></td>
+        <td><input type="number" name="bill_pay_day" placeholder="Pay Day" min="1" max="31"></td>
         <td>
             <button type="submit" name="action" value="add_bill">Save</button>
             <button type="button" class="cancel-bill">Cancel</button>
         </td>
         `
+        const paydayInput = row.querySelector('[name="bill_pay_day"]');
+        paydayInput.addEventListener("input", () => {
+            const value = Number(paydayInput.value);
+
+            if (value > 31) paydayInput.value = 31;
+            if (value < 1) paydayInput.value = 1;
+        });
+
 
         this.tbody.appendChild(row);
 
@@ -82,7 +90,7 @@ class BillManager {
        `
        <td><input type="text" name="edited_bill_name" value="${old_info[0]}"></td>
         <td><input type="number" name="edited_bill_amount" value="${old_info[1]}"></td>
-        <td><input type="number" name="edited_bill_payday" value="${old_info[2]}"></td>
+        <td><input type="number" name="edited_bill_payday" value="${old_info[2]}" min="1" max="31"></td>
         <td>
             <button type="submit" class="save_edits_button" name="action" value="save_edited_bill">Save Edits</button>
             <button type="button" class="cancel_edits_button">Cancel</button>
