@@ -53,7 +53,7 @@ class BillManager {
             this.handleSubmit(e);
         });
 
-        this.forms.bills.addEventListener("submt", (e) => {
+        this.forms.bills.addEventListener("submit", (e) => {
             this.handleSubmit(e);
         })
     }
@@ -202,10 +202,10 @@ class BillManager {
         console.log(action);
         switch (action){
             case "save_edited_bill":
-                console.log("saving edited");
+
                 return this.saveEditedBill(event);
             case "add_bill":
-                console.log("Adding bill");
+
                 return this.saveNewBill(event);
             case "add_income":
                 return this.addIncome(event);
@@ -215,7 +215,9 @@ class BillManager {
     }
 
     saveEditedBill(e){
-        const activeRow = this.editingRow;
+
+        const activeRow = e.submitter.closest("tr");
+        console.log(activeRow);
         if (!activeRow) return;
 
         const nameInput = activeRow.querySelector('[name="edited_bill_name"]');
@@ -226,11 +228,13 @@ class BillManager {
         const amount = amountInput?.value.trim();
         const payday =paydayInput?.value.trim();
 
-        if (!name.value.trim() || !amount.value.trim() || !payday.value.trim()){
+        if (!name || !amount || !payday){
+            console.log("Something missing");
             e.preventDefault();
             alert("Please fill in all required fields");
             return;
         }
+
     }
 
     saveNewBill(e){
@@ -246,11 +250,12 @@ class BillManager {
         const payday = paydayInput?.value.trim();
 
 
-        if (!name.value.trim() || !amount.value.trim() || !payday.value.trim()){
+        if (!name || !amount || !payday){
             e.preventDefault();
             alert("Please fill in all required fields");
             return;
         }
+
     }
 
     addIncome(e){
@@ -262,6 +267,7 @@ class BillManager {
             alert("Please fill in all required fields");
             return;
         }
+
     }
 }
 
