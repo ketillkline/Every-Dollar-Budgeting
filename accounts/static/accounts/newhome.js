@@ -26,7 +26,7 @@ class BillManager {
 
     setupEvents(){
         this.elements.addButton.addEventListener("click", () => {
-            console.log("got to setup");
+
             this.addBill();
         });
 
@@ -42,7 +42,7 @@ class BillManager {
                 const editButton = e.target.closest(".edit_bill_trigger");
                 const deleteButton = row.querySelector(".delete_button");
                 this.elements.editElements = [editButton, deleteButton];
-                console.log(this.elements.editElements);
+
                 this.editBill(old_info, row);
             }
             this.form.addEventListener("submit", (e) => {
@@ -100,6 +100,19 @@ class BillManager {
         for (const element of this.elements.editElements){
             this.updateUI(element, "hide");
         }
+        this.elements.editButtons = Array.from(document.querySelectorAll(".edit_bill_trigger"));
+        this.elements.deleteButtons = Array.from(document.querySelectorAll(".delete_button"));
+        console.log(this.elements.editButtons, this.elements.deleteButtons);
+       this.elements.editButtons.forEach(button => {
+            this.updateUI(button, "hide");
+       });
+
+       this.elements.deleteButtons.forEach(button => {
+            this.updateUI(button, "hide");
+       });
+
+
+
 
     }
 
@@ -117,7 +130,7 @@ class BillManager {
 
     addBill(){
         this.changeState("ADDING");
-        console.log("changed state")
+
 
         const row = document.createElement("tr");
 
@@ -150,7 +163,6 @@ class BillManager {
     }
 
     editBill(old_info, row) {
-        this.changeState("EDITING");
         this.elements.editingRow = row;
 
         const oldHTML = row.innerHTML;
@@ -166,6 +178,7 @@ class BillManager {
             <input type="hidden" name="bill_id" value="${old_info[3]}">
         </td>
         `;
+        this.changeState("EDITING");
 
         const cancelButton = row.querySelector(".cancel_edits_button");
         cancelButton.addEventListener("click", () => {
@@ -218,7 +231,7 @@ class BillManager {
         const name = nameInput?.value.trim();
         const amount = amountInput?.value.trim();
         const payday = paydayInput?.value.trim();
-        console.log("Saving New", name, amount, payday)
+
 
         if (!name || !amount || !payday){
             e.preventDefault();
