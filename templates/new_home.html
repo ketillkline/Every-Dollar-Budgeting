@@ -48,6 +48,7 @@
                     {% if pay_period_days %}
                     <p>{{ pay_period_days }}</p>
                     {% endif %}
+                    <p>{{ month }}</p>
                 </div>
             </div>
     </form>
@@ -65,12 +66,13 @@
 
                     <tbody class="bills-body">
                         {% for bill in bills %}
+                        <!-- This is how the backend knows which bill to edit -->
                         <tr class="bill-row" data-id="{{ bill.id }}"
                         data-name="{{ bill.name }}"
                         data-amount="{{ bill.amount }}"
                         data-payday="{{ bill.pay_day }}"
                         >
-                            <td>{{ bill.name }}</td>
+                            <td>{% if due %} {{ due_emoji }} {% endif %}{{ bill.name }}</td>
                             <td>{{ bill.amount }}</td>
                             <td>{{ bill.pay_day }}</td>
                             <td>

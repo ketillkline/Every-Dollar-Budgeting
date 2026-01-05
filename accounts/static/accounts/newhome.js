@@ -208,7 +208,7 @@ class BillManager {
 
                 return this.saveNewBill(event);
             case "add_income":
-                event.preventDefault();
+
                 return this.addIncome(event);
             default:
                 return;
@@ -268,6 +268,8 @@ class BillManager {
             alert("Please fill in all required fields");
             return;
         }
+        console.log(e, e.submitter);
+
 
     }
 }

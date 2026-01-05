@@ -76,26 +76,30 @@ class NewHomeView(View):
         end_date = request.POST.get("end_date")
         if not end_date:
             self.income_errors.add("New Income not submitted. Please fill in all required fields.")
-
         fields = {"amount": paycheck, "start_date": start_date, "end_date": end_date}
 
         if self.income_errors:
             return render(request, self.template_name, {"fields": fields,
                                                         "errors": self.income_errors, **self.get_base_context()})
+        month = self.get_month(start_date)
         new_income = Income.objects.create(**fields, user=self.user)
         self.income = new_income
+        context = self.get_base_context()
+        context["month"] = month
 
-        return render(request, self.template_name, self.get_base_context())
+        return render(request, self.template_name, context)
 
     def save_edited_bill(self, request: HttpRequest):
         bill_id = request.POST.get("bill_id")
+
         target_bill = Bill.objects.get(user=self.user, id=bill_id)
         name = request.POST.get("edited_bill_name")
         amount = request.POST.get("edited_bill_amount")
         pay_day = request.POST.get("edited_bill_payday")
 
+
         edited_fields = {"name": name, "amount": amount, "pay_day": pay_day}
-        print(dict(request.POST))
+
         for field, value in edited_fields.items():
             setattr(target_bill, field, value)
         target_bill.save()
@@ -128,12 +132,19 @@ class NewHomeView(View):
             "total_bills": total_bills['total'],
             "income": income,
             "pay_period_days": pay_period_days,
+            "due_emoji": "✅",
+            "due": True
+
 
         }
     def clear_all_incomes(self, request: HttpRequest):
         Income.objects.filter(user=self.user).all().delete()
         self.income=None
         return render(request, self.template_name, self.get_base_context())
+
+    def get_month(self, date):
+        date_object = self.get_date_object(date)
+        return date_object.month
 
 
 
