@@ -72,7 +72,7 @@
                         data-amount="{{ bill.amount }}"
                         data-payday="{{ bill.pay_day }}"
                         >
-                            <td>{% if due %} {{ due_emoji }} {% endif %}{{ bill.name }}</td>
+                            <td>{% if bill.due %} {{ due_emoji }} {% endif %}{{ bill.name }}</td>
                             <td>{{ bill.amount }}</td>
                             <td>{{ bill.pay_day }}</td>
                             <td>

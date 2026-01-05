@@ -81,11 +81,11 @@ class NewHomeView(View):
         if self.income_errors:
             return render(request, self.template_name, {"fields": fields,
                                                         "errors": self.income_errors, **self.get_base_context()})
-        month = self.get_month(start_date)
+        self.is_due(list(Bill.objects.filter(user=self.user)), start_date, end_date)
         new_income = Income.objects.create(**fields, user=self.user)
         self.income = new_income
         context = self.get_base_context()
-        context["month"] = month
+
 
         return render(request, self.template_name, context)
 
@@ -120,7 +120,7 @@ class NewHomeView(View):
             return delta.days
 
     def get_base_context(self):
-        bills = Bill.objects.filter(user=self.user).all().order_by("pay_day")
+        bills = Bill.objects.filter(user=self.user).all().order_by("-due", "-amount" ,"pay_day")
         total_bills = total_bills = Bill.objects.aggregate(total=Sum("amount"))
         income = None
         pay_period_days = None
@@ -142,9 +142,17 @@ class NewHomeView(View):
         self.income=None
         return render(request, self.template_name, self.get_base_context())
 
-    def get_month(self, date):
-        date_object = self.get_date_object(date)
-        return date_object.month
+    def is_due(self, bills: [Bill], start_date: str, end_date: str):
+        start_day = self.get_date_object(start_date).day
+        end_day = self.get_date_object(end_date).day
+        for bill in bills:
+            if start_day <= int(bill.pay_day) <= end_day:
+                bill.due = True
+            else:
+                bill.due = False
+            bill.save()
+
+
 
 
 

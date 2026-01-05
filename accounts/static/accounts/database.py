@@ -24,3 +24,4 @@ class Bill(models.Model):
     name = models.CharField()
     amount = models.FloatField()
     pay_day = models.CharField(max_length=2)
+    due = models.BooleanField(null=True)
