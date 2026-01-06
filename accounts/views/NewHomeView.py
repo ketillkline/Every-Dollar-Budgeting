@@ -57,19 +57,19 @@ class NewHomeView(View):
             return render(request, self.template_name, {"errors": self.errors,
                                                         **self.get_base_context()})
 
-        self.is_due(list(Bill.objects.filter(user=self.user)), self.income.start_date, self.income.end_date)
-
         new_bill = Bill.objects.create(**fields, user=self.user)
         return render(request, self.template_name, self.get_base_context())
 
     def delete_bill(self, request: HttpRequest):
-        print("deleting")
+
         bill_id = request.POST.get("bill_id")
+
         Bill.objects.filter(user=self.user, id=bill_id).delete()
 
         return render(request, self.template_name, self.get_base_context())
 
     def add_income(self, request: HttpRequest):
+        print("add income")
         paycheck = request.POST.get("paycheck")
         if not paycheck:
             self.income_errors.add("New Income not submitted. Please fill in all required fields.")
@@ -84,7 +84,7 @@ class NewHomeView(View):
         if self.income_errors:
             return render(request, self.template_name, {"fields": fields,
                                                         "errors": self.income_errors, **self.get_base_context()})
-        self.is_due(list(Bill.objects.filter(user=self.user)), start_date, end_date)
+
         new_income = Income.objects.create(**fields, user=self.user)
         self.income = new_income
 
@@ -107,7 +107,7 @@ class NewHomeView(View):
         for field, value in edited_fields.items():
             setattr(target_bill, field, value)
         target_bill.save()
-        self.is_due(list(Bill.objects.filter(user=self.user)), self.income.start_date, self.income.end_date)
+
 
         return render(request, self.template_name, self.get_base_context())
 
@@ -128,10 +128,13 @@ class NewHomeView(View):
 
     def get_base_context(self):
         bills = Bill.objects.filter(user=self.user).all().order_by("-due", "-amount" ,"pay_day")
-        total_bills = total_bills = Bill.objects.aggregate(total=Sum("amount"))
+        total_bills = Bill.objects.aggregate(total=Sum("amount"))
         income = None
         pay_period_days = None
-        if self.income:
+        if not self.income:
+            self.is_due(bills, None, None)
+        else:
+            self.is_due(list(Bill.objects.filter(user=self.user)), self.income.start_date, self.income.end_date)
             income = self.income
             pay_period_days = self.get_pay_period(self.income.start_date, self.income.end_date)
         return {
@@ -141,28 +144,47 @@ class NewHomeView(View):
             "pay_period_days": pay_period_days,
             "due_emoji": "✅",
             "due": True,
-
-
         }
-    def clear_all_incomes(self, request: HttpRequest):
-        Income.objects.filter(user=self.user).all().delete()
-        self.income=None
-        return render(request, self.template_name, self.get_base_context())
 
-    def is_due(self, bills: [Bill], start_date: str, end_date: str):
-        start_day = self.get_date_object(start_date).day
-        end_day = self.get_date_object(end_date).day
+    def clear_all_incomes(self, request: HttpRequest):
+
+        Income.objects.filter(user=self.user).all().delete()
+        self.income = None
+        context = self.get_base_context()
+        return render(request, self.template_name, context)
+
+    def is_due(self, bills, start_date, end_date):
+
+        if not start_date or not end_date:
+            for bill in bills:
+                bill.due = False
+
+            return
+        start_date = self.get_date_object(start_date)
+        end_date = self.get_date_object(end_date)
         for bill in bills:
-            self.payday_to_date(start_date.month, bill.pay_day, start_date.year)
-            if start_day <= int(bill.pay_day) <= end_day:
+            bill_date = self.payday_to_date(int(bill.pay_day), start_date, end_date)
+            if start_date <= bill_date <= end_date:
                 bill.due = True
+
             else:
                 bill.due = False
+
             bill.save()
 
-    def payday_to_date(self, month, pay_day, year):
+    def payday_to_date(self, payday: int, start_date, end_date):
+        start_year, start_month = start_date.year, start_date.month
+        start_days = calendar.monthrange(start_year, start_month)[1]
+        clamped_days = min(payday, start_days)
+        bill_date = date(start_year, start_month, clamped_days)
 
-
+        if start_date <= bill_date <= end_date:
+            return bill_date
+        end_year, end_month = end_date.year, end_date.month
+        end_days = calendar.monthrange(end_year, end_month)[1]
+        clamped_days = min(payday, end_days)
+        bill_date = date(end_year, end_month, clamped_days)
+        return bill_date
 
 
 

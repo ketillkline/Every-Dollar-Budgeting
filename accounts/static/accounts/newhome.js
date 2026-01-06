@@ -13,7 +13,8 @@ class BillManager {
             editingRow: null,
             editElements: [],
             editButtons: [],
-            deleteButtons: []
+            deleteButtons: [],
+            billIdInput: document.getElementById("bill_id")
         }
 
         this.submitActions = ["delete_bill", "save_edited_bill", "add_income",
@@ -35,6 +36,7 @@ class BillManager {
         this.elements.table.addEventListener("click", (e) => {
             if (e.target.classList.contains("edit_bill_trigger")){
                 const row = e.target.closest("tr");
+                this.elements.billIdInput.value = row.dataset.id;
 
                 const old_info = [
                     row.dataset.name, row.dataset.amount, row.dataset.payday,
@@ -46,6 +48,11 @@ class BillManager {
                 this.elements.editElements = [editButton, deleteButton];
 
                 this.editBill(old_info, row);
+            }
+            if (e.target.classList.contains("delete_button")){
+                const row = e.target.closest("tr.bill-row");
+                if (!row) return
+                this.elements.billIdInput.value = row.dataset.id;
             }
         });
 
@@ -143,7 +150,7 @@ class BillManager {
 
         row.innerHTML = `
         <td><input type="text" name="bill_name" placeholder="Name"></td>
-        <td><input type="number" name="bill_amount" placeholder="Amount"></td>
+        <td><input type="number" step="any" name="bill_amount" placeholder="Amount"></td>
         <td><input type="number" name="bill_pay_day" placeholder="Pay Day" min="1" max="31"></td>
         <td>
             <button type="submit" name="action" value="add_bill">Save</button>
@@ -202,18 +209,17 @@ class BillManager {
         console.log(action);
         switch (action){
             case "save_edited_bill":
-
                 return this.saveEditedBill(event);
             case "add_bill":
-
                 return this.saveNewBill(event);
             case "add_income":
-
                 return this.addIncome(event);
             default:
                 return;
         }
     }
+
+
 
     saveEditedBill(e){
 
@@ -235,6 +241,7 @@ class BillManager {
             alert("Please fill in all required fields");
             return;
         }
+
 
     }
 
