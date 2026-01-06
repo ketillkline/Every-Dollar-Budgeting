@@ -69,7 +69,7 @@ class NewHomeView(View):
         return render(request, self.template_name, self.get_base_context())
 
     def add_income(self, request: HttpRequest):
-        print("add income")
+
         paycheck = request.POST.get("paycheck")
         if not paycheck:
             self.income_errors.add("New Income not submitted. Please fill in all required fields.")
@@ -89,7 +89,6 @@ class NewHomeView(View):
         self.income = new_income
 
         context = self.get_base_context()
-
 
         return render(request, self.template_name, context)
 
@@ -129,10 +128,11 @@ class NewHomeView(View):
     def get_base_context(self):
         bills = Bill.objects.filter(user=self.user).all().order_by("-due", "-amount" ,"pay_day")
         total_bills = Bill.objects.aggregate(total=Sum("amount"))
-        income = None
-        pay_period_days = None
+        self.income = Income.objects.filter(user=self.user).latest("start_date")
         if not self.income:
             self.is_due(bills, None, None)
+            income = None
+            pay_period_days = None
         else:
             self.is_due(list(Bill.objects.filter(user=self.user)), self.income.start_date, self.income.end_date)
             income = self.income
@@ -142,8 +142,7 @@ class NewHomeView(View):
             "total_bills": total_bills['total'],
             "income": income,
             "pay_period_days": pay_period_days,
-            "due_emoji": "✅",
-            "due": True,
+            "due_emoji": "✅"
         }
 
     def clear_all_incomes(self, request: HttpRequest):
