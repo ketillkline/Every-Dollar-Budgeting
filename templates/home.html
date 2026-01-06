@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <title>HomePage</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'accounts/new_home.css' %}">
+    <link rel="stylesheet" href="{% static 'accounts/home.css' %}">
 </head>
 
 <body>
@@ -100,9 +100,14 @@
 
 
 
-<div id="money-wheel-container">
+    <div id="money-wheel-container">
         <div id="money-wheel">
         </div>
+
+        <div class="hover-zone expenses"></div>
+        <div class="hover-zone remaining"></div>
+
+        <div class="tooltip" id="wheel-tooltip"></div>
     </div>
 
 
