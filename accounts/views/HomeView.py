@@ -157,7 +157,6 @@ class HomeView(View):
         if not start_date or not end_date:
             for bill in bills:
                 bill.due = False
-
             return
         start_date = self.get_date_object(start_date)
         end_date = self.get_date_object(end_date)
