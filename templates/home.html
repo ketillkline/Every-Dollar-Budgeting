@@ -47,13 +47,6 @@
                         <button type="submit" name="action" value="add_income" id="income_submit_button">Submit</button>
                         <button type="submit" name="action" value="clear_all_incomes">Clear All</button>
                     </div>
-
-                    <div class="pay_period_days">
-                        {% if pay_period_days %}
-                        <p>This is my money for the next {{ pay_period_days }} days!</p>
-                        {% endif %}
-                        <p>{{ month }}</p>
-                    </div>
                 </div>
             </form>
         </div>

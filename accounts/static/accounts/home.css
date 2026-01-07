@@ -1,5 +1,5 @@
 body {
-    background-color: #f3f6fb;
+    background-color: lightblue;
     font-family: system-ui, -apple-system, BlinkMacSystemFont,
     "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
@@ -21,6 +21,7 @@ html, body {
 .section-header {
     margin-bottom: 1rem;
     text-align: center;
+    color: #343c3f;
 }
 
 .income-section {
@@ -93,11 +94,13 @@ html, body {
     display: flex;
     gap: 16px;
     align-items: flex-end;
+
 }
 
 .buttons-group button {
     height: 33px;
     cursor: pointer;
+    color: #343c3f;
 }
 
 
@@ -127,6 +130,7 @@ html, body {
 
 .bills-table button {
     cursor: pointer;
+    color: #343c3f;
 }
 
 .bills-table th {
@@ -134,8 +138,9 @@ html, body {
     padding 14px 16px;
     font-size: 0.85rem;
     border-bottom: 1px solid #e0e0e0;
-    background: #eef2f8;
+    background: lightblue;
     font-weight: 600;
+    color: #343c3f;
 }
 
 .bills-table tbody tr:hover {
@@ -166,8 +171,13 @@ html, body {
     padding: 10px;
     font-size: 0.95rem;
     border-radius: 8px;
-    background: #eef3fb;
+    background: lightblue;
     cursor: pointer;
+    color: #343c3f;
+}
+
+#bill_trigger:hover {
+    background: rgb(154, 195, 209);
 }
 
 
@@ -237,6 +247,8 @@ html, body {
     left:0;
 }
 
+
+
 .tooltip {
     position: absolute;
     padding: 8px 12px;
@@ -252,6 +264,3 @@ html, body {
     z-index: 1000;
 }
 
-.misc-text {
-
-}
