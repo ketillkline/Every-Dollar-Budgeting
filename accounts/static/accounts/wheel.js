@@ -23,28 +23,36 @@ const wheel = document.getElementById("money-wheel");
 wheel.style.setProperty("--bill-deg", bills_degrees + "deg")
 wheel.style.setProperty("--free-deg", "360deg")
 
-const tooltip = document.getElementById("wheel-tooltip");
-
 const expenseZone = document.querySelector(".hover-zone.expenses");
 const remainingZone = document.querySelector(".hover-zone.remaining");
 
-function showTooltip(text, event){
-    tooltip.textContent = text;
-    tooltip.style.left = event.offsetX + 15 + "px";
-    tooltip.style.top = event.offsetY + 15 + "px";
-    tooltip.style.opacity = 1;
+const tooltip = document.getElementById("wheel-tooltip");
+const container = document.getElementById("money-wheel-container");
+
+function showTooltip(text, e) {
+  tooltip.textContent = text;
+
+  const padding = 8;
+  const rect = container.getBoundingClientRect();
+
+  // cursor position relative to the container
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+
+  tooltip.style.left = (x + padding) + "px";
+  tooltip.style.top  = (y + padding) + "px";
+  tooltip.style.opacity = 1;
 }
 
-function hideTooltip(){
-    tooltip.style.opacity = 0;
+function hideTooltip() {
+  tooltip.style.opacity = 0;
 }
 
 expenseZone.addEventListener("mousemove", (e) => {
-    showTooltip(`Expenses: $${bills_amount.toFixed(2)}`, e);
+  showTooltip(`Expenses: $${bills_amount.toFixed(2)}`, e);
 });
-
 remainingZone.addEventListener("mousemove", (e) => {
-    showTooltip(`Remaining: $${free_amount.toFixed(2)}`, e);
+  showTooltip(`Remaining: $${free_amount.toFixed(2)}`, e);
 });
 
 expenseZone.addEventListener("mouseleave", hideTooltip);

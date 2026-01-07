@@ -50,7 +50,7 @@
 
                     <div class="pay_period_days">
                         {% if pay_period_days %}
-                        <p>{{ pay_period_days }}</p>
+                        <p>This is my money for the next {{ pay_period_days }} days!</p>
                         {% endif %}
                         <p>{{ month }}</p>
                     </div>
@@ -118,11 +118,12 @@
                     <div class="hover-zone expenses"></div>
                     <div class="hover-zone remaining"></div>
                 </div>
-
-
                 <div class="tooltip" id="wheel-tooltip"></div>
+
+
             </div>
         </div>
+
     </section>
 </div>
     <script src="{% static 'accounts/wheel.js'  %}"></script>

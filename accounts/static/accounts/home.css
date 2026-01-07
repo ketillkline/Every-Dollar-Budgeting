@@ -108,6 +108,17 @@ html, body {
     max-width: 700px;
 }
 
+.bills-section table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+}
+
+
 
 .bills-table {
     width: 100%;
@@ -119,8 +130,10 @@ html, body {
 }
 
 .bills-table th {
-    text-align: left;
-    padding 10px;
+    text-align: center;
+    padding 14px 16px;
+    font-size: 0.85rem;
+    border-bottom: 1px solid #e0e0e0;
     background: #eef2f8;
     font-weight: 600;
 }
@@ -170,19 +183,22 @@ html, body {
 }
 
 .wheel-section .section-header {
-    margin-bottom: 4rem;
+    margin-bottom: 2rem;
     margin-top: 0;
 }
 
-#money-wheel-container {
+#money-wheel-container{
     position: relative;
-    border-radius: 50%;
     width: 400px;
     height: 400px;
-    margin-right: 40px;
+
+    border-radius: 50%;
     padding: 24px;
     margin-top: 0.5rem;
 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 #money-wheel {
@@ -197,9 +213,10 @@ html, body {
 }
 
 .wheel-wrapper {
-    position: relative;
-    width: 400px;
-    height: 400px;
+    margin-top: auto;
+    margin-bottom: auto;
+    width: 325px;
+    height: 325px;
     border-radius: 50%;
     overflow: hidden;
 }
@@ -230,6 +247,11 @@ html, body {
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.15s ease;
+
     white-space: nowrap;
-    z-index: 10;
+    z-index: 1000;
+}
+
+.misc-text {
+
 }
