@@ -207,5 +207,5 @@ html, body {
     opacity: 0;
     transition: opacity 0.15s ease;
     white-space: nowrap;
-    z-indezL 10;
+    z-index: 10;
 }
