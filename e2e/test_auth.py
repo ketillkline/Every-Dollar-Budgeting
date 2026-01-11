@@ -23,3 +23,13 @@ def test_login_success(page, test_user, live_server):
     page.wait_for_url(url, timeout=5000)
 
     assert "login" not in page.url
+
+def test_wrong_credentials(page, test_user):
+    page.goto(url + "login/")
+
+    page.fill("input[name='username']", "testuser")
+    page.fill("input[name='password']", "wrongpassword")
+    page.click("button[type='submit']")
+
+    assert "login" in page.url
+
