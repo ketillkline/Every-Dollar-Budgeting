@@ -25,3 +25,17 @@ def test_income_submit(page):
     page.click("button[value='add_income']")
 
     assert page.url == url
+
+def test_add_bill(page):
+    login(page)
+
+    page.click()
+
+    page.fill()
+    page.fill()
+    page.fill()
+
+    page.click()
+
+def test_cancel(page):
+    login(page)
