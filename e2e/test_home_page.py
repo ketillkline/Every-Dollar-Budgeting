@@ -17,3 +17,11 @@ def test_clear_all(page):
 
 def test_income_submit(page):
     login(page)
+
+    page.fill("input[name='paycheck']", "700")
+    page.fill("input[name='start_date']", "2030-01-12")
+    page.fill("input[name='end_date']", "2030-01-26")
+
+    page.click("button[value='add_income']")
+
+    assert page.url == url
