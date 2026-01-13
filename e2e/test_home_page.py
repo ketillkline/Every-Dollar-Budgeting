@@ -1,5 +1,26 @@
 from .conftest import page, test_user, url
 
+
+buttons = {
+    "add_new_bill": "button[value='add_income']",
+    "clear_all": "button[value='clear_all_incomes']",
+    "cancel": "button[class='cancel_bill']",
+    "save": "button[value='add_bill']"
+}
+
+inputs = {
+    "new_bill_name": "input[name='bill_name']",
+    "new_bill_amount": "input[name='bill_amount']",
+    "new_bill_payday": "input[name='bill_pay_day']",
+    "paycheck": "input[name='paycheck']",
+    "start_date": "input[name='start_date']",
+    "end_date": "input[name='end_date']",
+    "edit_bill_name": "input[name='edited_bill_name']",
+    "edit_bill_amount": "input[name='edited_bill_amount']",
+    "edit_bill_payday": "input[name='edited_bill_payday']"
+
+}
+
 def login(page):
     page.goto(url + "login/")
     page.fill("input[name='username']", "testuser")
@@ -10,7 +31,7 @@ def test_clear_all(page):
 
     login(page)
 
-    clear_button = page.locator("button[value='clear_all_incomes']")
+    clear_button = page.locator(buttons.get("clear_all"))
 
     page.wait_for_load_state("networkidle")
     assert page.url == url
@@ -18,24 +39,44 @@ def test_clear_all(page):
 def test_income_submit(page):
     login(page)
 
-    page.fill("input[name='paycheck']", "700")
-    page.fill("input[name='start_date']", "2030-01-12")
-    page.fill("input[name='end_date']", "2030-01-26")
+    page.fill(inputs.get("paycheck"), "700")
+    page.fill(inputs.get("start_date"), "2030-01-12")
+    page.fill(inputs.get("end_date"), "2030-01-26")
 
-    page.click("button[value='add_income']")
+    page.click(buttons.get("add_new_bill"))
 
     assert page.url == url
 
 def test_add_bill(page):
     login(page)
 
-    page.click()
+    page.click(buttons.get("add_new_bill"))
 
-    page.fill()
-    page.fill()
-    page.fill()
+    page.fill(inputs.get("bill_name"))
+    page.fill(inputs.get("bill_amount"))
+    page.fill(inputs.get("bill_payday"))
 
-    page.click()
+    page.click("cancel")
+
+    assert page.url == url
+
+def test_add_bill_missing_field(page):
+    login(page)
+
+    page.fill(inputs.get("bill_name"))
+    page.fill(inputs.get("bill_amount"))
+
+    page.click(buttons.get("save"))
+
+    assert page.url == url
+
+
 
 def test_cancel(page):
     login(page)
+
+    page.click()
+    page.click()
+
+    assert page.url == url
+
