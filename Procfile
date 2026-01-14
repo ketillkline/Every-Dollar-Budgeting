@@ -1,1 +1,2 @@
-web: gunicorn SimpleBudget.wsgi:application
+web: gunicorn SimpleBudget.wsgi:application --bind 127.0.0.1:8000
+
