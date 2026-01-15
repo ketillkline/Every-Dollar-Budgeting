@@ -10,21 +10,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 class HomeView(LoginRequiredMixin, View):
     login_url = "/login/"
-    def dispatch(self, request, *args, **kwargs):
-        self.errors = set([])
-        self.income_errors= set([])
-        self.user = request.user
-        self.template_name = "home.html"
-        self.request = request
-        try:
-            self.income = Income.objects.filter(user=self.user).first()
-        except ObjectDoesNotExist:
-            self.income = None
-
-        return super().dispatch(request, *args, **kwargs)
+    template_name = "home.html"
 
     def get(self, request, *args, **kwargs):
-        return render(request, self.template_name, self.get_base_context())
+        return render(request, self.template_name, self.get_base_context(request))
 
     def post(self, request, *args, **kwargs):
         action = request.POST.get("action")
@@ -42,62 +31,63 @@ class HomeView(LoginRequiredMixin, View):
 
 
     def add_bill(self, request: HttpRequest):
-
+        errors = set([])
         name = request.POST.get("bill_name")
         if not name:
-            self.errors.add("Please fill in all required fields")
+            errors.add("Please fill in all required fields")
         amount = request.POST.get("bill_amount")
         if not amount:
-            self.errors.add("Please fill in all required fields")
+            errors.add("Please fill in all required fields")
         pay_day = request.POST.get("bill_pay_day")
         if not pay_day:
-            self.errors.add("Please fill in all required fields")
+            errors.add("Please fill in all required fields")
 
         fields = {"name": name, "amount": amount, "pay_day": pay_day}
 
-        if self.errors:
-            return render(request, self.template_name, {"errors": self.errors,
-                                                        **self.get_base_context()})
+        if errors:
+            return render(request, self.template_name, {"errors": errors,
+                                                        **self.get_base_context(request)})
 
-        new_bill = Bill.objects.create(**fields, user=self.user)
-        return render(request, self.template_name, self.get_base_context())
+        new_bill = Bill.objects.create(**fields, user=request.user)
+        return render(request, self.template_name, self.get_base_context(request))
 
     def delete_bill(self, request: HttpRequest):
 
         bill_id = request.POST.get("bill_id")
 
-        Bill.objects.filter(user=self.user, id=bill_id).delete()
+        Bill.objects.filter(user=request.user, id=bill_id).delete()
 
-        return render(request, self.template_name, self.get_base_context())
+        return render(request, self.template_name, self.get_base_context(request))
 
     def add_income(self, request: HttpRequest):
-
+        income_errors = set([])
         paycheck = request.POST.get("paycheck")
         if not paycheck:
-            self.income_errors.add("New Income not submitted. Please fill in all required fields.")
+            income_errors.add("New Income not submitted. Please fill in all required fields.")
         start_date = request.POST.get("start_date")
         if not start_date:
-            self.income_errors.add("New Income not submitted. Please fill in all required fields.")
+            income_errors.add("New Income not submitted. Please fill in all required fields.")
         end_date = request.POST.get("end_date")
         if not end_date:
-            self.income_errors.add("New Income not submitted. Please fill in all required fields.")
+            income_errors.add("New Income not submitted. Please fill in all required fields.")
         fields = {"amount": paycheck, "start_date": start_date, "end_date": end_date}
 
-        if self.income_errors:
+        if income_errors:
             return render(request, self.template_name, {"fields": fields,
-                                                        "errors": self.income_errors, **self.get_base_context()})
+                                                        "errors": income_errors, **self.get_base_context(request)})
 
-        new_income = Income.objects.create(**fields, user=self.user)
-        self.income = new_income
+        new_income = Income.objects.create(**fields, user=request.user)
 
-        context = self.get_base_context()
+
+        context = self.get_base_context(request)
 
         return render(request, self.template_name, context)
 
     def save_edited_bill(self, request: HttpRequest):
+        errors = set([])
         bill_id = request.POST.get("bill_id")
 
-        target_bill = Bill.objects.get(user=self.user, id=bill_id)
+        target_bill = Bill.objects.get(user=request.user, id=bill_id)
         name = request.POST.get("edited_bill_name")
         amount = request.POST.get("edited_bill_amount")
         pay_day = request.POST.get("edited_bill_payday")
@@ -110,7 +100,7 @@ class HomeView(LoginRequiredMixin, View):
         target_bill.save()
 
 
-        return render(request, self.template_name, self.get_base_context())
+        return render(request, self.template_name, self.get_base_context(request))
 
     def get_date_object(self, date: str):
         if type(date) == str:
@@ -127,18 +117,18 @@ class HomeView(LoginRequiredMixin, View):
             delta = end_date - start_date
             return delta.days
 
-    def get_base_context(self):
-        bills = Bill.objects.filter(user=self.user).all().order_by("-due", "-amount" ,"pay_day")
+    def get_base_context(self, request: HttpRequest):
+        bills = Bill.objects.filter(user=request.user).all().order_by("-due", "-amount" ,"pay_day")
         total_bills = Bill.objects.aggregate(total=Sum("amount"))
-        self.income = Income.objects.filter(user=self.user).first()
-        if not self.income:
+        income = self.get_income(request)
+        if not income:
             self.is_due(bills, None, None)
             income = None
             pay_period_days = None
         else:
-            self.is_due(list(Bill.objects.filter(user=self.user)), self.income.start_date, self.income.end_date)
-            income = self.income
-            pay_period_days = self.get_pay_period(self.income.start_date, self.income.end_date)
+            income = self.get_income(request)
+            self.is_due(list(Bill.objects.filter(user=request.user)), income.start_date, income.end_date)
+            pay_period_days = self.get_pay_period(income.start_date, income.end_date)
         return {
             "bills": bills,
             "total_bills": total_bills['total'],
@@ -147,11 +137,13 @@ class HomeView(LoginRequiredMixin, View):
             "due_emoji": "✅"
         }
 
+    def get_income(self, request: HttpRequest):
+        return Income.objects.filter(user=request.user).first()
+
     def clear_all_incomes(self, request: HttpRequest):
 
-        Income.objects.filter(user=self.user).all().delete()
-        self.income = None
-        context = self.get_base_context()
+        Income.objects.filter(user=request.user).all().delete()
+        context = self.get_base_context(request)
         return render(request, self.template_name, context)
 
     def is_due(self, bills, start_date, end_date):
