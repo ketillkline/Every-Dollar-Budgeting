@@ -6,9 +6,11 @@ from django.db.models import Sum
 from django.core.exceptions import ObjectDoesNotExist
 from datetime import datetime, date, timedelta
 import calendar
+from django.contrib.auth.mixins import LoginRequiredMixin
 
-class HomeView(View):
+class HomeView(LoginRequiredMixin, View):
     def dispatch(self, request, *args, **kwargs):
+        login_url = "/login/"
         self.errors = set([])
         self.income_errors= set([])
         self.user = request.user
