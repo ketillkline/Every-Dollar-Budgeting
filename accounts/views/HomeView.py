@@ -9,8 +9,8 @@ import calendar
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 class HomeView(LoginRequiredMixin, View):
+    login_url = "/login/"
     def dispatch(self, request, *args, **kwargs):
-        login_url = "/login/"
         self.errors = set([])
         self.income_errors= set([])
         self.user = request.user
